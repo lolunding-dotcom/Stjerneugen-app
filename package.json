@@ -1,0 +1,12 @@
+{
+  "name": "stjerneugen-app",
+  "version": "1.0.0",
+  "description": "Børnenes pligter-app med spil",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000"
+  },
+  "keywords": ["børn", "pligter", "spil"],
+  "author": "Louise",
+  "license": "MIT"
+}
