@@ -2,796 +2,1499 @@
 <html lang="da">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>⭐ Stjerneugen</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --radius: 20px;
-  --shadow: 0 6px 24px rgba(0,0,0,0.13);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
-body { font-family: 'Nunito', sans-serif; min-height: 100vh; overflow-x: hidden; }
-.app { max-width: 430px; margin: 0 auto; min-height: 100vh; position: relative; }
-.screen { display: none; min-height: 100vh; flex-direction: column; }
-.screen.active { display: flex; }
-
-/* ── THEMES ── */
-body.theme-football { --bg: #1a6b1a; --bg2: #0f4f0f; --accent: #f0c000; --text: #fff; --card: rgba(255,255,255,0.12); --currency: "bolde ⚽"; }
-body.theme-unicorn  { --bg: #c060d0; --bg2: #7030a0; --accent: #ffe0ff; --text: #fff; --card: rgba(255,255,255,0.15); --currency: "støv ✨"; }
-body.theme-pirate   { --bg: #1a3a5c; --bg2: #0d1f30; --accent: #f0a000; --text: #fff; --card: rgba(255,255,255,0.12); --currency: "mønter 🪙"; }
-body.theme-rocket   { --bg: #0a0a2e; --bg2: #050518; --accent: #00e5ff; --text: #fff; --card: rgba(255,255,255,0.10); --currency: "krystaller 💎"; }
-body.theme-superhero{ --bg: #1a0030; --bg2: #0d0020; --accent: #ff2060; --text: #fff; --card: rgba(255,255,255,0.12); --currency: "energi ⚡"; }
-body.theme-none     { --bg: #f0ebff; --bg2: #d8d0f8; --accent: #ffb800; --text: #2d2350; --card: rgba(255,255,255,0.85); }
-
-body { background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%); color: var(--text); transition: background 0.5s; }
-
-/* ── LOGIN ── */
-#login {
-  align-items: center; justify-content: center;
-  padding: 40px 24px; gap: 28px;
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+body { 
+  font-family: 'Nunito', sans-serif; 
   background: linear-gradient(160deg, #1a0a3a 0%, #0d0020 100%);
+  color: #fff;
   min-height: 100vh;
 }
-.login-title {
-  font-family: 'Fredoka One', cursive;
-  font-size: 48px; letter-spacing: 1px; text-align: center;
-  color: #fff; text-shadow: 0 0 30px rgba(255,180,0,0.6);
-}
-.login-subtitle { color: rgba(255,255,255,0.6); font-size: 16px; text-align: center; margin-top: -16px; }
-.child-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
-.child-card {
-  border: none; border-radius: 24px; padding: 28px 16px;
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
-  position: relative; overflow: hidden;
-}
-.child-card:active { transform: scale(0.94); }
-.child-card.c-w { background: linear-gradient(135deg, #ff6b35, #f7931e); box-shadow: 0 8px 24px rgba(255,107,53,0.4); }
-.child-card.c-l { background: linear-gradient(135deg, #a855f7, #ec4899); box-shadow: 0 8px 24px rgba(168,85,247,0.4); }
-.child-avatar { font-size: 56px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
-.child-name { font-family: 'Fredoka One', cursive; font-size: 22px; color: #fff; }
-.child-age { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 700; }
-.child-theme-badge {
-  position: absolute; bottom: 10px; right: 12px;
-  font-size: 20px; opacity: 0.7;
-}
-.login-footer { display: flex; gap: 12px; }
-.ghost-btn {
-  background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.25);
-  border-radius: 50px; padding: 10px 22px;
-  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700;
-  color: #fff; cursor: pointer; backdrop-filter: blur(8px);
-  transition: background 0.15s;
-}
+.app { max-width: 430px; margin: 0 auto; }
+.screen { display: none; min-height: 100vh; padding: 20px; }
+.screen.active { display: block; }
+
+/* Login */
+.login-title { font-family: 'Fredoka One', cursive; font-size: 48px; text-align: center; margin: 60px 0 20px; text-shadow: 0 0 30px rgba(255,180,0,0.6); }
+.child-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 40px 0; }
+.child-card { background: linear-gradient(135deg, #a855f7, #ec4899); border: none; border-radius: 24px; padding: 28px 16px; text-align: center; cursor: pointer; transition: transform 0.2s; }
+.child-card:active { transform: scale(0.95); }
+.child-card.orange { background: linear-gradient(135deg, #ff6b35, #f7931e); }
+.child-card.purple { background: linear-gradient(135deg, #a855f7, #ec4899); }
+.child-card.blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.child-card.green { background: linear-gradient(135deg, #10b981, #059669); }
+.child-card.pink { background: linear-gradient(135deg, #ec4899, #be185d); }
+.child-card.yellow { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.child-avatar { font-size: 56px; margin-bottom: 10px; }
+.child-name { font-family: 'Fredoka One', cursive; font-size: 22px; }
+.child-age { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+.login-footer { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.ghost-btn { background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 50px; padding: 10px 22px; font-size: 15px; font-weight: 700; color: #fff; cursor: pointer; }
 .ghost-btn:active { background: rgba(255,255,255,0.25); }
 
-/* ── PIN ── */
-#pin {
-  align-items: center; justify-content: center;
-  padding: 40px 24px; gap: 20px;
-  background: linear-gradient(160deg, #1a0a3a 0%, #0d0020 100%);
-}
-.pin-avatar { font-size: 80px; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3)); }
-#pin h2 { font-family: 'Fredoka One', cursive; font-size: 30px; color: #fff; }
-#pin p { color: rgba(255,255,255,0.6); }
-.pin-dots { display: flex; gap: 16px; margin: 4px 0; }
-.pin-dot { width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.4); transition: all 0.15s; }
-.pin-dot.filled { background: #ffb800; border-color: #ffb800; transform: scale(1.3); box-shadow: 0 0 12px rgba(255,184,0,0.6); }
-.numpad { display: grid; grid-template-columns: repeat(3, 80px); gap: 14px; }
-.num-btn {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.2);
-  font-size: 28px; font-weight: 800; font-family: 'Nunito', sans-serif; color: #fff;
-  cursor: pointer; transition: transform 0.1s, background 0.1s;
-  backdrop-filter: blur(8px);
-}
-.num-btn:active { transform: scale(0.88); background: rgba(255,184,0,0.4); }
+/* PIN */
+.pin-screen { text-align: center; padding: 80px 20px; }
+.pin-avatar { font-size: 80px; margin-bottom: 20px; }
+.pin-name { font-family: 'Fredoka One', cursive; font-size: 30px; margin-bottom: 10px; }
+.pin-dots { display: flex; gap: 16px; justify-content: center; margin: 30px 0; }
+.pin-dot { width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.4); }
+.pin-dot.filled { background: #ffb800; border-color: #ffb800; transform: scale(1.3); }
+.numpad { display: grid; grid-template-columns: repeat(3, 80px); gap: 14px; justify-content: center; margin: 20px 0; }
+.num-btn { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.2); font-size: 28px; font-weight: 800; color: #fff; cursor: pointer; }
+.num-btn:active { transform: scale(0.9); background: rgba(255,184,0,0.4); }
 .num-btn.invisible { background: transparent; border: none; pointer-events: none; }
-.error-msg { color: #ff6b6b; font-weight: 800; min-height: 22px; font-size: 15px; }
+.error-msg { color: #ff6b6b; font-weight: 800; min-height: 22px; font-size: 15px; margin: 10px 0; }
 
-/* ── THEME PICKER ── */
-#theme-picker {
-  padding: 0 0 40px; overflow-y: auto;
-}
-.picker-header {
-  padding: 20px 20px 16px;
-  display: flex; align-items: center; gap: 12px;
-  background: rgba(0,0,0,0.2); backdrop-filter: blur(8px);
-  position: sticky; top: 0; z-index: 10;
-}
-.picker-header h2 { font-family: 'Fredoka One', cursive; font-size: 22px; }
-.picker-intro { padding: 16px 20px 8px; color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600; }
-.theme-grid { display: flex; flex-direction: column; gap: 14px; padding: 8px 16px 16px; }
-.theme-option {
-  border: none; border-radius: 24px; padding: 20px 22px;
-  display: flex; align-items: center; gap: 18px;
-  cursor: pointer; transition: transform 0.15s;
-  text-align: left; position: relative; overflow: hidden;
-}
-.theme-option:active { transform: scale(0.97); }
-.theme-option.selected::after {
-  content: '✓'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
-  font-size: 22px; font-weight: 900;
-}
-.theme-football  { background: linear-gradient(135deg, #1d7a1d, #0a5a0a); box-shadow: 0 6px 20px rgba(0,100,0,0.35); }
-.theme-unicorn   { background: linear-gradient(135deg, #c060d0, #7030a0); box-shadow: 0 6px 20px rgba(150,50,200,0.35); }
-.theme-pirate    { background: linear-gradient(135deg, #1a3a5c, #8b4513); box-shadow: 0 6px 20px rgba(20,40,80,0.4); }
-.theme-rocket    { background: linear-gradient(135deg, #0a0a40, #000828); box-shadow: 0 6px 20px rgba(0,0,100,0.4); }
-.theme-superhero { background: linear-gradient(135deg, #1a0050, #600020); box-shadow: 0 6px 20px rgba(80,0,80,0.4); }
-.theme-icon { font-size: 48px; flex-shrink: 0; }
-.theme-info { flex: 1; }
-.theme-name { font-family: 'Fredoka One', cursive; font-size: 22px; color: #fff; display: block; }
-.theme-desc { font-size: 13px; color: rgba(255,255,255,0.75); font-weight: 600; margin-top: 2px; display: block; }
-.theme-currency { font-size: 12px; color: rgba(255,255,255,0.55); font-weight: 700; margin-top: 4px; display: block; }
-.confirm-btn {
-  margin: 4px 16px 0;
-  width: calc(100% - 32px);
-  padding: 18px; border-radius: 50px; border: none;
-  font-family: 'Fredoka One', cursive; font-size: 20px; color: #fff;
-  background: linear-gradient(135deg, #ffb800, #ff6b35);
-  box-shadow: 0 6px 20px rgba(255,100,0,0.4);
-  cursor: pointer; transition: transform 0.1s;
-}
-.confirm-btn:active { transform: scale(0.97); }
+/* Parent Mode */
+.parent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.parent-header h2 { font-family: 'Fredoka One', cursive; font-size: 28px; }
+.back-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 44px; height: 44px; font-size: 18px; cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; }
+.task-list { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+.task-item { background: rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+.task-name { font-weight: 700; font-size: 16px; }
+.task-stars { font-family: 'Fredoka One', cursive; color: #ffb800; font-size: 14px; margin-top: 4px; }
+.task-buttons { display: flex; gap: 8px; }
+.task-btn { padding: 8px 12px; border-radius: 8px; border: none; font-size: 14px; cursor: pointer; }
+.task-btn:active { transform: scale(0.95); }
+.btn-edit { background: #3b82f6; color: #fff; }
+.btn-delete { background: #ff6b6b; color: #fff; }
+.btn-primary { background: linear-gradient(135deg, #ffb800, #ff6b35); color: #000; font-family: 'Fredoka One', cursive; font-size: 18px; padding: 16px; border-radius: 16px; border: none; cursor: pointer; width: 100%; margin-bottom: 20px; }
+.btn-primary:active { transform: scale(0.98); }
 
-/* ── DASHBOARD ── */
-#dashboard { background: transparent; }
-.dash-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 18px;
-  background: rgba(0,0,0,0.25); backdrop-filter: blur(12px);
-  position: sticky; top: 0; z-index: 10;
-}
-.dash-title { display: flex; align-items: center; gap: 10px; }
-.dash-avatar-sm { font-size: 32px; }
-.dash-title h2 { font-family: 'Fredoka One', cursive; font-size: 20px; color: #fff; }
-.dash-goal-sm { color: rgba(255,255,255,0.65); font-size: 12px; font-weight: 700; display: block; }
-.icon-btn {
-  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 50%; width: 44px; height: 44px; font-size: 18px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  color: #fff; backdrop-filter: blur(8px);
-}
-
-/* PROGRESS HERO */
-.progress-hero {
-  padding: 28px 22px 24px;
-  display: flex; flex-direction: column; gap: 16px;
-}
-.currency-display {
-  display: flex; align-items: center; gap: 12px;
-}
-.currency-icon { font-size: 56px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)); animation: float 3s ease-in-out infinite; }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-.currency-numbers { flex: 1; }
-.currency-count { font-family: 'Fredoka One', cursive; font-size: 64px; line-height: 1; color: var(--accent); text-shadow: 0 0 20px rgba(255,200,0,0.4); }
-.currency-label { color: rgba(255,255,255,0.7); font-size: 15px; font-weight: 700; }
-.progress-bar { width: 100%; height: 14px; border-radius: 50px; background: rgba(255,255,255,0.15); overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent)); border-radius: 50px; transition: width 0.4s ease; box-shadow: 0 0 16px rgba(255,200,0,0.5); }
-
-/* TASK LIST */
-.task-list { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 24px; }
-.task-card {
-  background: var(--card); backdrop-filter: blur(8px);
-  border-radius: 16px; padding: 18px 16px;
-  display: flex; align-items: center; gap: 14px;
-  border: 1px solid rgba(255,255,255,0.1);
-  cursor: pointer; transition: all 0.2s;
-  position: relative;
-}
-.task-card:active { transform: scale(0.98); background: rgba(255,255,255,0.2); }
-.task-card.done { opacity: 0.55; }
-.task-card.done .task-text { text-decoration: line-through; color: rgba(255,255,255,0.5); }
-.task-checkbox { flex-shrink: 0; width: 28px; height: 28px; border-radius: 10px; border: 2.5px solid rgba(255,255,255,0.3); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.15s; }
-.task-card.done .task-checkbox { background: var(--accent); border-color: var(--accent); }
-.task-content { flex: 1; }
-.task-text { font-size: 16px; font-weight: 600; color: #fff; }
-.task-meta { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
-.task-reward { font-family: 'Fredoka One', cursive; font-size: 18px; flex-shrink: 0; }
-
-/* ADD TASK */
-.add-task-section {
-  padding: 0 16px 24px;
-}
-.add-task-input {
-  width: 100%; padding: 16px 18px; border-radius: 16px;
-  border: 2px solid rgba(255,255,255,0.15); background: var(--card);
-  color: #fff; font-family: 'Nunito', sans-serif; font-size: 15px;
-  backdrop-filter: blur(8px); transition: border 0.2s;
-}
-.add-task-input::placeholder { color: rgba(255,255,255,0.4); }
-.add-task-input:focus { outline: none; border-color: var(--accent); }
-.add-task-buttons { display: flex; gap: 10px; margin-top: 12px; }
-.add-task-buttons button { flex: 1; padding: 12px; border-radius: 12px; border: none; font-family: 'Nunito', sans-serif; font-weight: 700; cursor: pointer; transition: transform 0.1s; }
-.add-task-buttons button:active { transform: scale(0.95); }
-.btn-add { background: var(--accent); color: var(--bg); }
+/* Modal */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 100; }
+.modal.active { display: flex; }
+.modal-content { background: linear-gradient(160deg, #1a0a3a 0%, #0d0020 100%); border-radius: 24px; padding: 28px; max-width: 90%; max-height: 85vh; overflow-y: auto; }
+.modal-title { font-family: 'Fredoka One', cursive; font-size: 24px; margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 8px; opacity: 0.7; }
+.form-input { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #fff; font-size: 15px; }
+.form-input:focus { outline: none; border-color: #ffb800; }
+.modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
+.modal-buttons button { flex: 1; padding: 14px; border-radius: 12px; border: none; font-family: 'Fredoka One', cursive; font-size: 16px; cursor: pointer; }
+.btn-save { background: linear-gradient(135deg, #ffb800, #ff6b35); color: #000; }
 .btn-cancel { background: rgba(255,255,255,0.15); color: #fff; }
 
-/* GAME */
-#game {
-  flex-direction: column; gap: 20px; padding: 20px;
-  align-items: center; justify-content: center; text-align: center;
-}
-#game h2 { font-family: 'Fredoka One', cursive; font-size: 32px; }
-#game p { color: rgba(255,255,255,0.7); margin: 8px 0; }
-#game-canvas { border-radius: 16px; background: #000; margin: 20px 0; max-width: 100%; height: auto; display: block; }
-.game-info { color: rgba(255,255,255,0.9); font-weight: 700; font-size: 18px; min-height: 40px; }
-.game-buttons { display: flex; gap: 12px; justify-content: center; }
-.game-buttons button { padding: 14px 28px; border-radius: 50px; border: none; font-family: 'Fredoka One', cursive; font-size: 18px; cursor: pointer; transition: transform 0.1s; }
-.game-buttons button:active { transform: scale(0.95); }
-#play-btn { background: var(--accent); color: var(--bg); font-weight: 900; }
-#back-btn { background: rgba(255,255,255,0.2); color: #fff; }
-#play-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+/* Dashboard */
+.dash-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(0,0,0,0.3); margin: -20px -20px 20px; }
+.dash-title { display: flex; align-items: center; gap: 10px; }
+.dash-avatar { font-size: 32px; }
+.dash-name { font-family: 'Fredoka One', cursive; font-size: 20px; }
+.currency-display { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; }
+.currency-count { font-family: 'Fredoka One', cursive; font-size: 64px; color: #ffb800; }
+.currency-label { font-size: 15px; opacity: 0.7; margin-top: 8px; }
+.user-task-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.user-task-card { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.user-task-card:active { transform: scale(0.98); }
+.user-task-card.done { opacity: 0.5; }
+.task-checkbox { width: 28px; height: 28px; border-radius: 10px; border: 2.5px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.user-task-card.done .task-checkbox { background: #ffb800; border-color: #ffb800; }
+.user-task-card.done .task-text { text-decoration: line-through; opacity: 0.5; }
+.task-content { flex: 1; }
+.task-text { font-weight: 600; }
+.task-reward { font-family: 'Fredoka One', cursive; font-size: 18px; color: #ffb800; }
 
-/* CONFETTI */
-#confetti-canvas { position: fixed; top: 0; left: 0; pointer-events: none; }
+/* Edit child pickers */
+.emoji-picker-btn { width: 50px; height: 50px; font-size: 28px; border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; background: rgba(255,255,255,0.08); cursor: pointer; transition: all 0.15s; }
+.emoji-picker-btn.selected { border-color: #ffb800; background: rgba(255,184,0,0.3); }
+.color-picker-btn { width: 60px; height: 60px; border-radius: 12px; border: 3px solid transparent; cursor: pointer; transition: all 0.15s; }
+.color-picker-btn.selected { border-color: #fff; transform: scale(1.1); }
 </style>
 </head>
 <body>
 
 <div class="app">
-
-<!-- LOGIN SCREEN -->
-<div id="login" class="screen active">
-  <div>
+  <!-- LOGIN -->
+  <div id="login" class="screen active">
     <h1 class="login-title">⭐ Stjerneugen</h1>
-    <p class="login-subtitle">Hvem er det?</p>
+    <p style="text-align: center; opacity: 0.6; margin-bottom: 40px;">Hvem er det?</p>
+    <div class="child-grid" id="child-grid"></div>
+    <div class="login-footer">
+      <button class="ghost-btn" onclick="goToParentPin()">👨‍👩‍👧‍👦 Forældre</button>
+    </div>
   </div>
-  <div class="child-grid" id="child-grid"></div>
-  <div class="login-footer">
-    <button class="ghost-btn" id="add-child-btn">➕ Tilføj barn</button>
-    <button class="ghost-btn" id="settings-btn">⚙️ Indstillinger</button>
-  </div>
-</div>
 
-<!-- PIN SCREEN -->
-<div id="pin" class="screen">
-  <div style="text-align: center;">
-    <div class="pin-avatar" id="pin-avatar"></div>
-    <h2 id="pin-name"></h2>
-    <p>Indtast PIN-kode</p>
+  <!-- PIN -->
+  <div id="pin" class="screen">
+    <div class="pin-screen">
+      <div class="pin-avatar" id="pin-avatar"></div>
+      <h2 class="pin-name" id="pin-name"></h2>
+      <p style="opacity: 0.6;">Indtast PIN-kode</p>
+      <div class="pin-dots" id="pin-dots"></div>
+      <div class="error-msg" id="error-msg"></div>
+      <div class="numpad" id="numpad"></div>
+      <button class="ghost-btn" onclick="goBack()">← Tilbage</button>
+    </div>
   </div>
-  <div class="pin-dots" id="pin-dots"></div>
-  <div class="error-msg" id="error-msg"></div>
-  <div class="numpad" id="numpad"></div>
-  <button class="ghost-btn" onclick="goBack()">← Tilbage</button>
-</div>
 
-<!-- THEME PICKER SCREEN -->
-<div id="theme-picker" class="screen">
-  <div class="picker-header">
-    <button class="ghost-btn" onclick="goBack()">← Tilbage</button>
-    <h2>Vælg tema 🎨</h2>
+  <!-- PARENT PIN -->
+  <div id="parent-pin" class="screen">
+    <div class="pin-screen">
+      <h2 class="pin-name">👨‍👩‍👧‍👦 Forældreindfald</h2>
+      <p style="opacity: 0.6;">Indtast forældrenes PIN</p>
+      <div class="pin-dots" id="parent-pin-dots"></div>
+      <div class="error-msg" id="parent-error-msg"></div>
+      <div class="numpad" id="parent-numpad"></div>
+      <button class="ghost-btn" onclick="goBack()">← Tilbage</button>
+    </div>
   </div>
-  <p class="picker-intro">Hvilket tema kunne du godt lide?</p>
-  <div class="theme-grid" id="theme-grid"></div>
-</div>
 
-<!-- DASHBOARD SCREEN -->
-<div id="dashboard" class="screen">
-  <div class="dash-header">
-    <div class="dash-title">
-      <span class="dash-avatar-sm" id="dash-avatar"></span>
-      <div>
-        <h2 id="dash-name"></h2>
-        <span class="dash-goal-sm" id="dash-goal"></span>
+  <!-- PARENT MODE -->
+  <div id="parent" class="screen">
+    <div class="parent-header">
+      <h2>📋 Opgaver</h2>
+      <button class="back-btn" onclick="goBack()">←</button>
+    </div>
+    <button class="btn-primary" onclick="openAddTaskModal()">➕ Ny opgave</button>
+    <div class="task-list" id="parent-task-list"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="screen">
+    <div class="dash-header">
+      <div class="dash-title">
+        <span class="dash-avatar" id="dash-avatar"></span>
+        <div>
+          <div class="dash-name" id="dash-name"></div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="back-btn" onclick="openEditChildModal()">✏️</button>
+        <button class="back-btn" onclick="logout()">🚪</button>
       </div>
     </div>
-    <button class="icon-btn" onclick="logout()">🚪</button>
-  </div>
 
-  <div class="progress-hero">
     <div class="currency-display">
-      <div class="currency-icon" id="currency-icon"></div>
-      <div class="currency-numbers">
-        <div class="currency-count" id="currency-count">0</div>
-        <div class="currency-label" id="currency-label"></div>
+      <div class="currency-count" id="currency-count">0</div>
+      <div class="currency-label">stjerner ⭐</div>
+    </div>
+
+    <div class="user-task-list" id="user-task-list"></div>
+
+    <button class="btn-primary" onclick="showAvailableTasks()">➕ Tilføj pligt</button>
+    <button class="btn-primary" onclick="confirmStartNewWeek()" style="background: linear-gradient(135deg, #a855f7, #ec4899); margin-top: 12px;">🔄 Start ny uge</button>
+    <button class="btn-primary" id="play-game-btn" onclick="startGame()" style="display: none; background: linear-gradient(135deg, #00e5ff, #a855f7); margin-top: 12px;">🎮 Spil nu!</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" class="screen">
+    <div style="text-align: center; padding: 20px;">
+      <h2 id="game-title" style="font-family: 'Fredoka One', cursive; font-size: 32px; margin-bottom: 10px;"></h2>
+      <p id="game-desc" style="opacity: 0.7; margin-bottom: 20px;"></p>
+      <canvas id="game-canvas" width="400" height="600" style="border-radius: 16px; background: #000; max-width: 100%; display: block; margin: 0 auto;"></canvas>
+      <div id="game-info" style="min-height: 40px; margin: 20px 0; font-weight: 700;"></div>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button class="btn-primary" onclick="endGame()">← Afslut</button>
       </div>
     </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="add-task-modal" class="modal">
+  <div class="modal-content">
+    <h2 class="modal-title">➕ Ny opgave</h2>
+    <div class="form-group">
+      <label class="form-label">Opgavenavn</label>
+      <input type="text" class="form-input" id="task-name" placeholder="F.eks. Rydde værelse">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Stjerner</label>
+      <input type="number" class="form-input" id="task-stars" value="1" min="1" max="10">
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-save" onclick="saveTask()">Gem</button>
+      <button class="btn-cancel" onclick="closeAddTaskModal()">Annuller</button>
     </div>
   </div>
+</div>
 
-  <div class="task-list" id="task-list"></div>
+<div id="available-tasks-modal" class="modal">
+  <div class="modal-content">
+    <h2 class="modal-title">Vælg opgave</h2>
+    <div id="available-tasks-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    <button class="ghost-btn" onclick="closeAvailableTasksModal()" style="margin-top: 20px; width: 100%;">Annuller</button>
+  </div>
+</div>
 
-  <div class="add-task-section" id="add-task-section" style="display: none;">
-    <input type="text" class="add-task-input" id="new-task-input" placeholder="Ny pligt...">
-    <div class="add-task-buttons">
-      <button class="btn-add" onclick="addTask()">➕ Tilføj</button>
-      <button class="btn-cancel" onclick="toggleAddTask()">Annuller</button>
+<div id="select-week-tasks-modal" class="modal">
+  <div class="modal-content">
+    <h2 class="modal-title">🔄 Ny uge</h2>
+    <p style="opacity: 0.7; margin-bottom: 20px;">Vælg opgaver til næste uge</p>
+    
+    <div id="week-tasks-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;"></div>
+    
+    <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+      <div style="font-weight: 700; margin-bottom: 12px;">🎮 Vælg spil til ugens slutning:</div>
+      <div id="game-selector" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+    </div>
+    
+    <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+      <div style="font-weight: 700; margin-bottom: 8px;">📊 Point denne uge:</div>
+      <div id="week-points-display" style="font-family: 'Fredoka One', cursive; font-size: 24px; color: #ffb800;">0 stjerner</div>
+      <div id="unlock-status" style="font-size: 14px; opacity: 0.7; margin-top: 8px;"></div>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="btn-primary" onclick="confirmResetWeek()">Start ny uge</button>
+      <button class="btn-cancel" onclick="closeResetWeekModal()">Annuller</button>
     </div>
   </div>
-
-  <button class="ghost-btn" id="toggle-add-btn" style="margin: 0 16px 24px;" onclick="toggleAddTask()">➕ Ny pligt</button>
-  <button class="ghost-btn" id="play-game-btn" style="margin: 0 16px 24px; background: linear-gradient(135deg, #ffb800, #ff6b35);" onclick="startGame()">🎮 Afslut med spil!</button>
 </div>
 
-<!-- GAME SCREEN -->
-<div id="game" class="screen">
-  <h2 id="game-title"></h2>
-  <p id="game-desc"></p>
-  <canvas id="game-canvas" width="400" height="600"></canvas>
-  <div class="game-info" id="game-info"></div>
-  <div class="game-buttons">
-    <button class="game-buttons button" id="play-btn" onclick="restartGame()" style="display: none;">🔄 Spil igen</button>
-    <button class="game-buttons button" id="back-btn" onclick="endGame()">← Tilbage</button>
+<div id="edit-child-modal" class="modal">
+  <div class="modal-content">
+    <h2 class="modal-title">✏️ Rediger profil</h2>
+    
+    <div class="form-group">
+      <label class="form-label">Navn</label>
+      <input type="text" class="form-input" id="edit-child-name">
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Alder</label>
+      <input type="number" class="form-input" id="edit-child-age" min="1" max="18">
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Avatar emoji</label>
+      <div id="edit-emoji-picker" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;"></div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Baggrundsfarve</label>
+      <div id="edit-color-picker" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;"></div>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="btn-primary" onclick="saveEditChild()">Gem ændringer</button>
+      <button class="btn-cancel" onclick="closeEditChildModal()">Annuller</button>
+    </div>
   </div>
 </div>
-
-</div>
-
-<canvas id="confetti-canvas"></canvas>
 
 <script>
-// ════════════════════════════════════════
-// DATA & STATE
-// ════════════════════════════════════════
-const family = {
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const PARENT_PIN = '0000';
+
+const data = {
   children: [
-    { id: 1, name: 'Alma', emoji: '🎀', avatar: '👧', age: 6, pin: '1234', theme: 'unicorn', color: 'c-w', currency: 0, goal: 5, tasks: [] },
-    { id: 2, name: 'Lasse', emoji: '⚽', avatar: '👦', age: 9, pin: '5678', theme: 'football', color: 'c-l', currency: 0, goal: 8, tasks: [] }
+    { id: 1, name: 'Leonora', emoji: '👧', age: 6, pin: '1234', currency: 0, tasks: [], selectedGame: null },
+    { id: 2, name: 'Wilhelm', emoji: '👦', age: 9, pin: '5678', currency: 0, tasks: [], selectedGame: null }
+  ],
+  availableTasks: [
+    { id: 1, name: 'Borddækning', stars: 1 },
+    { id: 2, name: 'Hænge vasketøj op', stars: 3 },
+    { id: 3, name: 'Tøm opvaskemaskine', stars: 1 },
+    { id: 4, name: 'Folde vasketøj', stars: 3 },
+    { id: 5, name: 'Give Bingo mad og vand', stars: 1 },
+    { id: 6, name: 'Lave mad', stars: 2 },
+    { id: 7, name: 'Tage af bordet', stars: 2 },
+    { id: 8, name: 'Bære skrald ud', stars: 2 }
   ]
+};
+
+let currentChild = null;
+let editingTaskId = null;
+
+// ═══════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════
+function save() {
+  localStorage.setItem('stjerneugen', JSON.stringify(data));
 }
 
-let currentChild = null
-let gameLoop = null
-
-// ════════════════════════════════════════
-// LOCAL STORAGE
-// ════════════════════════════════════════
-function saveFamilyData() {
-  localStorage.setItem('family', JSON.stringify(family))
+function load() {
+  const stored = localStorage.getItem('stjerneugen');
+  if(stored) Object.assign(data, JSON.parse(stored));
 }
 
-function loadFamilyData() {
-  const stored = localStorage.getItem('family')
-  if(stored) Object.assign(family, JSON.parse(stored))
-}
-
-function saveChild() {
-  saveFamilyData()
-}
-
-// ════════════════════════════════════════
+// ═══════════════════════════════════════
 // NAVIGATION
-// ════════════════════════════════════════
+// ═══════════════════════════════════════
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
-  document.getElementById(id).classList.add('active')
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
 function goBack() {
-  showScreen('login')
+  currentChild = null;
+  editingTaskId = null;
+  showScreen('login');
 }
 
 function logout() {
-  currentChild = null
-  showScreen('login')
+  goBack();
 }
 
-// ════════════════════════════════════════
+// ═══════════════════════════════════════
 // LOGIN
-// ════════════════════════════════════════
-function updateLoginBadges() {
-  const grid = document.getElementById('child-grid')
-  grid.innerHTML = ''
-  family.children.forEach(child => {
-    const card = document.createElement('button')
-    card.className = `child-card ${child.color}`
+// ═══════════════════════════════════════
+function renderChildren() {
+  const grid = document.getElementById('child-grid');
+  grid.innerHTML = '';
+  data.children.forEach((child, i) => {
+    const card = document.createElement('button');
+    card.className = 'child-card' + (i === 0 ? ' orange' : '');
     card.innerHTML = `
-      <div class="child-avatar">${child.avatar}</div>
+      <div class="child-avatar">${child.emoji}</div>
       <div class="child-name">${child.name}</div>
       <div class="child-age">${child.age} år</div>
-      <div class="child-theme-badge">${child.emoji}</div>
-    `
-    card.onclick = () => goToPin(child)
-    grid.appendChild(card)
-  })
+    `;
+    card.onclick = () => goToChildPin(child);
+    grid.appendChild(card);
+  });
 }
 
-function goToPin(child) {
-  currentChild = child
-  document.getElementById('pin-avatar').textContent = child.avatar
-  document.getElementById('pin-name').textContent = child.name
-  document.getElementById('pin-dots').innerHTML = ''
-  document.getElementById('error-msg').textContent = ''
-  for(let i=0;i<child.pin.length;i++) {
-    document.getElementById('pin-dots').appendChild(document.createElement('div')).className = 'pin-dot'
+function goToChildPin(child) {
+  currentChild = child;
+  document.getElementById('pin-avatar').textContent = child.emoji;
+  document.getElementById('pin-name').textContent = child.name;
+  renderPinDots('pin-dots', child.pin.length);
+  document.getElementById('error-msg').textContent = '';
+  renderNumpad('numpad', enterChildPin);
+  showScreen('pin');
+}
+
+// ═══════════════════════════════════════
+// PIN
+// ═══════════════════════════════════════
+function renderPinDots(containerId, count) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  for(let i = 0; i < count; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'pin-dot';
+    container.appendChild(dot);
   }
-  renderNumpad()
-  showScreen('pin')
 }
 
-function renderNumpad() {
-  const numpad = document.getElementById('numpad')
-  numpad.innerHTML = ''
-  const nums = [1,2,3,4,5,6,7,8,9,'','0,'']
-  const allNums = [...nums.slice(0,9), '', 0, '']
-  allNums.forEach(n => {
-    const btn = document.createElement('button')
-    btn.className = 'num-btn' + (n === '' ? ' invisible' : '')
-    btn.textContent = n
-    if(n !== '' && n !== ' ') {
-      btn.onclick = () => enterPin(n)
-    }
-    numpad.appendChild(btn)
-  })
+function renderNumpad(containerId, callback) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const nums = [1,2,3,4,5,6,7,8,9,'',0,''];
+  nums.forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'num-btn' + (n === '' ? ' invisible' : '');
+    btn.textContent = n;
+    if(n !== '') btn.onclick = () => callback(n);
+    container.appendChild(btn);
+  });
 }
 
-let pinAttempt = ''
-function enterPin(digit) {
-  pinAttempt += digit
-  updatePinDots()
-  if(pinAttempt.length === currentChild.pin.length) {
-    if(pinAttempt === currentChild.pin) {
-      pinAttempt = ''
-      applyTheme(currentChild.theme)
-      showScreen('dashboard')
-      updateDashboard()
+let childPinAttempt = '';
+function enterChildPin(digit) {
+  childPinAttempt += digit;
+  updatePinDots('pin-dots', childPinAttempt.length);
+  
+  if(childPinAttempt.length === currentChild.pin.length) {
+    if(childPinAttempt === currentChild.pin) {
+      childPinAttempt = '';
+      showScreen('dashboard');
+      renderDashboard();
     } else {
-      document.getElementById('error-msg').textContent = '❌ Forkert PIN'
-      pinAttempt = ''
-      updatePinDots()
-      setTimeout(() => {
-        document.getElementById('error-msg').textContent = ''
-      }, 2000)
+      document.getElementById('error-msg').textContent = '❌ Forkert PIN';
+      childPinAttempt = '';
+      updatePinDots('pin-dots', 0);
+      setTimeout(() => document.getElementById('error-msg').textContent = '', 2000);
     }
   }
 }
 
-function updatePinDots() {
-  const dots = document.querySelectorAll('.pin-dot')
-  dots.forEach((d,i) => {
-    if(i < pinAttempt.length) d.classList.add('filled')
-    else d.classList.remove('filled')
-  })
+function updatePinDots(containerId, filledCount) {
+  const dots = document.querySelectorAll(`#${containerId} .pin-dot`);
+  dots.forEach((dot, i) => {
+    if(i < filledCount) dot.classList.add('filled');
+    else dot.classList.remove('filled');
+  });
 }
 
-// ════════════════════════════════════════
-// THEMES
-// ════════════════════════════════════════
-function applyTheme(themeName) {
-  document.body.className = `theme-${themeName}`
+// ═══════════════════════════════════════
+// PARENT PIN
+// ═══════════════════════════════════════
+function goToParentPin() {
+  renderPinDots('parent-pin-dots', PARENT_PIN.length);
+  document.getElementById('parent-error-msg').textContent = '';
+  renderNumpad('parent-numpad', enterParentPin);
+  showScreen('parent-pin');
 }
 
-function updateThemePicker() {
-  const themes = [
-    { id: 'football', name: '⚽ Fodbold', desc: 'Mål og bolde', icon: '🏟️', currency: 'bolde ⚽' },
-    { id: 'unicorn', name: '✨ Enhjørning', desc: 'Glitter og drømme', icon: '🦄', currency: 'støv ✨' },
-    { id: 'pirate', name: '🏴‍☠️ Pirat', desc: 'Skat og eventyr', icon: '🏴‍☠️', currency: 'mønter 🪙' },
-    { id: 'rocket', name: '🚀 Rumrejse', desc: 'Krystaller og stjerner', icon: '🚀', currency: 'krystaller 💎' },
-    { id: 'superhero', name: '🦸 Superhelt', desc: 'Energi og kraft', icon: '🦸', currency: 'energi ⚡' },
-    { id: 'none', name: '☀️ Sol', desc: 'Lyst og venligt', icon: '☀️', currency: 'stjerner ⭐' }
-  ]
-  const grid = document.getElementById('theme-grid')
-  grid.innerHTML = ''
-  themes.forEach(t => {
-    const btn = document.createElement('button')
-    btn.className = `theme-option theme-${t.id}` + (currentChild.theme === t.id ? ' selected' : '')
-    btn.innerHTML = `
-      <div class="theme-icon">${t.icon}</div>
-      <div class="theme-info">
-        <span class="theme-name">${t.name}</span>
-        <span class="theme-desc">${t.desc}</span>
-        <span class="theme-currency">${t.currency}</span>
-      </div>
-    `
-    btn.onclick = () => {
-      currentChild.theme = t.id
-      saveChild()
-      document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('selected'))
-      btn.classList.add('selected')
-      applyTheme(t.id)
+let parentPinAttempt = '';
+function enterParentPin(digit) {
+  parentPinAttempt += digit;
+  updatePinDots('parent-pin-dots', parentPinAttempt.length);
+  
+  if(parentPinAttempt.length === PARENT_PIN.length) {
+    if(parentPinAttempt === PARENT_PIN) {
+      parentPinAttempt = '';
+      showScreen('parent');
+      renderParentTasks();
+    } else {
+      document.getElementById('parent-error-msg').textContent = '❌ Forkert PIN';
+      parentPinAttempt = '';
+      updatePinDots('parent-pin-dots', 0);
+      setTimeout(() => document.getElementById('parent-error-msg').textContent = '', 2000);
     }
-    grid.appendChild(btn)
-  })
+  }
 }
 
-// ════════════════════════════════════════
+// ═══════════════════════════════════════
+// PARENT MODE
+// ═══════════════════════════════════════
+function renderParentTasks() {
+  const list = document.getElementById('parent-task-list');
+  list.innerHTML = '';
+  
+  if(data.availableTasks.length === 0) {
+    list.innerHTML = '<p style="text-align: center; opacity: 0.6; padding: 40px;">Ingen opgaver endnu</p>';
+    return;
+  }
+  
+  data.availableTasks.forEach((task, i) => {
+    const item = document.createElement('div');
+    item.className = 'task-item';
+    
+    const nameDiv = document.createElement('div');
+    const nameTxt = document.createElement('div');
+    nameTxt.className = 'task-name';
+    nameTxt.textContent = task.name;
+    const starsTxt = document.createElement('div');
+    starsTxt.className = 'task-stars';
+    starsTxt.textContent = task.stars + ' ⭐';
+    nameDiv.appendChild(nameTxt);
+    nameDiv.appendChild(starsTxt);
+    
+    const buttonsDiv = document.createElement('div');
+    buttonsDiv.className = 'task-buttons';
+    
+    const editBtn = document.createElement('button');
+    editBtn.className = 'task-btn btn-edit';
+    editBtn.textContent = '✏️';
+    editBtn.onclick = () => editTask(i);
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'task-btn btn-delete';
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.onclick = () => deleteTask(i);
+    
+    buttonsDiv.appendChild(editBtn);
+    buttonsDiv.appendChild(deleteBtn);
+    
+    item.appendChild(nameDiv);
+    item.appendChild(buttonsDiv);
+    list.appendChild(item);
+  });
+}
+
+function openAddTaskModal() {
+  editingTaskId = null;
+  document.getElementById('task-name').value = '';
+  document.getElementById('task-stars').value = '1';
+  document.getElementById('add-task-modal').classList.add('active');
+}
+
+function closeAddTaskModal() {
+  document.getElementById('add-task-modal').classList.remove('active');
+}
+
+function saveTask() {
+  const name = document.getElementById('task-name').value.trim();
+  const stars = parseInt(document.getElementById('task-stars').value);
+  
+  if(!name || !stars || stars < 1) {
+    alert('Udfyld alle felter!');
+    return;
+  }
+  
+  if(editingTaskId !== null) {
+    data.availableTasks[editingTaskId].name = name;
+    data.availableTasks[editingTaskId].stars = stars;
+  } else {
+    data.availableTasks.push({ id: Date.now(), name, stars });
+  }
+  
+  save();
+  renderParentTasks();
+  closeAddTaskModal();
+}
+
+function editTask(index) {
+  editingTaskId = index;
+  const task = data.availableTasks[index];
+  document.getElementById('task-name').value = task.name;
+  document.getElementById('task-stars').value = task.stars;
+  document.getElementById('add-task-modal').classList.add('active');
+}
+
+function deleteTask(index) {
+  if(confirm('Slet denne opgave?')) {
+    data.availableTasks.splice(index, 1);
+    save();
+    renderParentTasks();
+  }
+}
+
+// ═══════════════════════════════════════
 // DASHBOARD
-// ════════════════════════════════════════
-function updateDashboard() {
-  document.getElementById('dash-avatar').textContent = currentChild.avatar
-  document.getElementById('dash-name').textContent = currentChild.name
-  document.getElementById('dash-goal').textContent = `Mål: ${currentChild.currency}/${currentChild.goal}`
-  document.getElementById('currency-icon').textContent = ['⚽','✨','🪙','💎','⚡','⭐']['football,unicorn,pirate,rocket,superhero,none'.split(',').indexOf(currentChild.theme)]
-  const themeInfo = { football: '⚽', unicorn: '✨', pirate: '🪙', rocket: '💎', superhero: '⚡', none: '⭐' }
-  document.getElementById('currency-label').textContent = `${currentChild.currency} ${themeInfo[currentChild.theme]}`
-  document.getElementById('currency-count').textContent = currentChild.currency
-  const progressPct = Math.min(100, (currentChild.currency / currentChild.goal) * 100)
-  document.getElementById('progress-fill').style.width = progressPct + '%'
-  renderTasks()
-  document.getElementById('toggle-add-btn').style.display = 'block'
-  document.getElementById('add-task-section').style.display = 'none'
-  if(currentChild.currency >= currentChild.goal) {
-    document.getElementById('play-game-btn').style.display = 'block'
+// ═══════════════════════════════════════
+function renderDashboard() {
+  document.getElementById('dash-avatar').textContent = currentChild.emoji;
+  document.getElementById('dash-name').textContent = currentChild.name;
+  document.getElementById('currency-count').textContent = currentChild.currency;
+  
+  // Check if game is unlocked (2x age)
+  const gameBtn = document.getElementById('play-game-btn');
+  const unlockAt = currentChild.age;
+  if(currentChild.currency >= unlockAt) {
+    gameBtn.style.display = 'block';
   } else {
-    document.getElementById('play-game-btn').style.display = 'none'
+    gameBtn.style.display = 'none';
+  }
+  
+  renderUserTasks();
+}
+
+function renderUserTasks() {
+  const list = document.getElementById('user-task-list');
+  list.innerHTML = '';
+  
+  if(currentChild.tasks.length === 0) {
+    list.innerHTML = '<p style="text-align: center; opacity: 0.6; padding: 40px;">Ingen pligter endnu.<br>Klik "➕ Tilføj pligt"</p>';
+    return;
+  }
+  
+  currentChild.tasks.forEach((task, i) => {
+    const card = document.createElement('div');
+    card.className = 'user-task-card' + (task.done ? ' done' : '');
+    
+    const checkbox = document.createElement('div');
+    checkbox.className = 'task-checkbox';
+    checkbox.textContent = task.done ? '✓' : '';
+    
+    const content = document.createElement('div');
+    content.className = 'task-content';
+    const text = document.createElement('div');
+    text.className = 'task-text';
+    text.textContent = task.name;
+    content.appendChild(text);
+    
+    const rightSide = document.createElement('div');
+    rightSide.style.cssText = 'display: flex; gap: 8px; align-items: center;';
+    
+    const reward = document.createElement('div');
+    reward.className = 'task-reward';
+    reward.textContent = task.stars;
+    rightSide.appendChild(reward);
+    
+    if(!task.done) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '✕';
+      deleteBtn.style.cssText = 'background: rgba(255,107,107,0.8); color: #fff; border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;';
+      deleteBtn.onclick = (e) => { e.stopPropagation(); deleteUserTask(i); };
+      rightSide.appendChild(deleteBtn);
+    }
+    
+    card.appendChild(checkbox);
+    card.appendChild(content);
+    card.appendChild(rightSide);
+    
+    card.onclick = () => toggleTask(i);
+    list.appendChild(card);
+  });
+}
+
+function deleteUserTask(index) {
+  if(confirm('Slet denne pligt?')) {
+    currentChild.tasks.splice(index, 1);
+    save();
+    renderDashboard();
   }
 }
 
-function renderTasks() {
-  const list = document.getElementById('task-list')
-  list.innerHTML = ''
-  currentChild.tasks.forEach((task, idx) => {
-    const card = document.createElement('div')
-    card.className = 'task-card' + (task.done ? ' done' : '')
-    card.innerHTML = `
-      <div class="task-checkbox">${task.done ? '✓' : ''}</div>
-      <div class="task-content">
-        <div class="task-text">${task.text}</div>
-        <div class="task-meta">${task.date}</div>
-      </div>
-      <div class="task-reward">${task.reward}</div>
-    `
-    card.onclick = () => toggleTask(idx)
-    list.appendChild(card)
-  })
-}
-
-function toggleTask(idx) {
-  currentChild.tasks[idx].done = !currentChild.tasks[idx].done
-  if(currentChild.tasks[idx].done) {
-    currentChild.currency += currentChild.tasks[idx].reward.split(' ')[0].length ? parseInt(currentChild.tasks[idx].reward) : 1
+function toggleTask(index) {
+  const task = currentChild.tasks[index];
+  const unlockAt = currentChild.age;
+  const wasUnlocked = currentChild.currency >= unlockAt;
+  
+  task.done = !task.done;
+  
+  if(task.done) {
+    currentChild.currency += task.stars;
+    
+    // Check if just unlocked
+    if(!wasUnlocked && currentChild.currency >= unlockAt) {
+      launchFireworks();
+    }
   } else {
-    currentChild.currency -= currentChild.tasks[idx].reward.split(' ')[0].length ? parseInt(currentChild.tasks[idx].reward) : 1
+    currentChild.currency = Math.max(0, currentChild.currency - task.stars);
   }
-  saveChild()
-  updateDashboard()
-  launchConfetti()
+  
+  save();
+  renderDashboard();
 }
 
-function toggleAddTask() {
-  const section = document.getElementById('add-task-section')
-  const btn = document.getElementById('toggle-add-btn')
-  section.style.display = section.style.display === 'none' ? 'block' : 'none'
-  btn.textContent = section.style.display === 'none' ? '➕ Ny pligt' : '❌ Luk'
-  if(section.style.display === 'block') {
-    document.getElementById('new-task-input').focus()
+function launchFireworks() {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  
+  const ctx = canvas.getContext('2d');
+  const colors = ['#FFB800', '#FF6B35', '#00E5FF', '#A855F7', '#10B981', '#EC4899'];
+  const particles = [];
+  let burstCount = 0;
+  let animationFrame = 0;
+  
+  function animate() {
+    animationFrame++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Add new bursts every 30 frames
+    if(animationFrame % 30 === 0 && burstCount < 5) {
+      const centerX = Math.random() * window.innerWidth;
+      const centerY = Math.random() * (window.innerHeight * 0.5);
+      
+      for(let i=0; i<30; i++) {
+        particles.push({
+          x: centerX,
+          y: centerY,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 100
+        });
+      }
+      burstCount++;
+    }
+    
+    // Update and draw particles
+    for(let i=particles.length-1; i>=0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.2;
+      p.life--;
+      
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.life / 100;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      
+      if(p.life <= 0) particles.splice(i, 1);
+    }
+    
+    // Continue animation
+    if(particles.length > 0 || burstCount < 5) {
+      requestAnimationFrame(animate);
+    } else {
+      document.body.removeChild(canvas);
+    }
+  }
+  
+  animate();
+}
+
+function showAvailableTasks() {
+  const list = document.getElementById('available-tasks-list');
+  list.innerHTML = '';
+  
+  data.availableTasks.forEach(task => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-primary';
+    btn.textContent = `${task.name} (+${task.stars} ⭐)`;
+    btn.onclick = () => addTaskToChild(task);
+    list.appendChild(btn);
+  });
+  
+  document.getElementById('available-tasks-modal').classList.add('active');
+}
+
+function closeAvailableTasksModal() {
+  document.getElementById('available-tasks-modal').classList.remove('active');
+}
+
+function addTaskToChild(task) {
+  currentChild.tasks.push({
+    name: task.name,
+    stars: task.stars,
+    done: false
+  });
+  save();
+  closeAvailableTasksModal();
+  renderDashboard();
+}
+
+// ═══════════════════════════════════════
+// RESET WEEK
+// ═══════════════════════════════════════
+let selectedWeekTasks = [];
+let selectedWeekGame = null;
+
+function confirmStartNewWeek() {
+  if(confirm('Er du sikker på at du vil starte en ny uge? Alle afsluttede opgaver fjernes.')) {
+    selectedWeekTasks = [];
+    selectedWeekGame = currentChild.selectedGame || 'football';
+    renderWeekTasksList();
+    renderGameSelector();
+    updateWeekPointsDisplay();
+    document.getElementById('select-week-tasks-modal').classList.add('active');
   }
 }
 
-function addTask() {
-  const input = document.getElementById('new-task-input')
-  const text = input.value.trim()
-  if(text) {
-    const today = new Date().toLocaleDateString('da-DK')
-    currentChild.tasks.push({ text, date: today, done: false, reward: 1 })
-    saveChild()
-    input.value = ''
-    updateDashboard()
-    toggleAddTask()
+function renderGameSelector() {
+  const games = [
+    { id: 'football', name: 'Fodbold', emoji: '⚽' },
+    { id: 'unicorn', name: 'Enhjørning', emoji: '🦄' },
+    { id: 'pirate', name: 'Pirat', emoji: '🏴‍☠️' },
+    { id: 'rocket', name: 'Rumrejse', emoji: '🚀' },
+    { id: 'superhero', name: 'Superhelt', emoji: '🦸' }
+  ];
+  
+  const container = document.getElementById('game-selector');
+  container.innerHTML = '';
+  
+  games.forEach(game => {
+    const btn = document.createElement('button');
+    btn.style.cssText = `padding: 12px; border-radius: 12px; border: 2px solid ${selectedWeekGame === game.id ? '#ffb800' : 'rgba(255,255,255,0.2)'}; background: ${selectedWeekGame === game.id ? 'rgba(255,184,0,0.3)' : 'rgba(255,255,255,0.08)'}; color: #fff; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 24px;`;
+    btn.textContent = `${game.emoji} ${game.name}`;
+    btn.onclick = () => {
+      selectedWeekGame = game.id;
+      renderGameSelector();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function closeResetWeekModal() {
+  document.getElementById('select-week-tasks-modal').classList.remove('active');
+}
+
+function renderWeekTasksList() {
+  const list = document.getElementById('week-tasks-list');
+  list.innerHTML = '';
+  
+  data.availableTasks.forEach((task, i) => {
+    const count = selectedWeekTasks.filter(t => t === i).length;
+    
+    const taskDiv = document.createElement('div');
+    taskDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); margin-bottom: 8px;';
+    
+    const nameDiv = document.createElement('div');
+    nameDiv.style.cssText = 'flex: 1;';
+    nameDiv.innerHTML = `<strong>${task.name}</strong><br><span style="color: #ffb800; font-size: 14px;">${task.stars} ⭐ per gang</span>`;
+    
+    const controlsDiv = document.createElement('div');
+    controlsDiv.style.cssText = 'display: flex; gap: 8px; align-items: center;';
+    
+    const minusBtn = document.createElement('button');
+    minusBtn.textContent = '−';
+    minusBtn.style.cssText = 'width: 32px; height: 32px; border-radius: 8px; border: none; background: rgba(255,255,255,0.15); color: #fff; font-size: 20px; font-weight: 700; cursor: pointer;';
+    minusBtn.onclick = () => { removeWeekTask(i); };
+    
+    const countSpan = document.createElement('span');
+    countSpan.style.cssText = 'font-family: "Fredoka One", cursive; font-size: 18px; min-width: 24px; text-align: center; color: #ffb800;';
+    countSpan.textContent = count;
+    
+    const plusBtn = document.createElement('button');
+    plusBtn.textContent = '+';
+    plusBtn.style.cssText = 'width: 32px; height: 32px; border-radius: 8px; border: none; background: rgba(255,184,0,0.3); color: #ffb800; font-size: 20px; font-weight: 700; cursor: pointer;';
+    plusBtn.onclick = () => { addWeekTask(i); };
+    
+    controlsDiv.appendChild(minusBtn);
+    controlsDiv.appendChild(countSpan);
+    controlsDiv.appendChild(plusBtn);
+    
+    taskDiv.appendChild(nameDiv);
+    taskDiv.appendChild(controlsDiv);
+    list.appendChild(taskDiv);
+  });
+}
+
+function addWeekTask(index) {
+  selectedWeekTasks.push(index);
+  renderWeekTasksList();
+  updateWeekPointsDisplay();
+}
+
+function removeWeekTask(index) {
+  const idx = selectedWeekTasks.indexOf(index);
+  if(idx > -1) {
+    selectedWeekTasks.splice(idx, 1);
+  }
+  renderWeekTasksList();
+  updateWeekPointsDisplay();
+}
+
+function updateWeekPointsDisplay() {
+  let total = 0;
+  selectedWeekTasks.forEach(i => {
+    total += data.availableTasks[i].stars;
+  });
+  
+  const unlockAt = currentChild.age;
+  const display = document.getElementById('week-points-display');
+  const status = document.getElementById('unlock-status');
+  
+  display.textContent = `${total} stjerner`;
+  
+  if(total >= unlockAt) {
+    status.textContent = `✅ Spil låst op! (${unlockAt} stjerner nødvendigt)`;
+    status.style.color = '#00e5ff';
+  } else {
+    status.textContent = `⚠️ Ikke nok til spil (${unlockAt} stjerner nødvendigt)`;
+    status.style.color = '#ff6b6b';
   }
 }
 
-// ════════════════════════════════════════
-// GAME
-// ════════════════════════════════════════
+function confirmResetWeek() {
+  if(selectedWeekTasks.length === 0) {
+    alert('Vælg mindst én opgave!');
+    return;
+  }
+  
+  // Remove ALL tasks (both done and not done)
+  currentChild.tasks = [];
+  
+  // Reset currency to 0
+  currentChild.currency = 0;
+  
+  // Add selected tasks for new week (can be duplicates)
+  selectedWeekTasks.forEach(i => {
+    const task = data.availableTasks[i];
+    currentChild.tasks.push({
+      name: task.name,
+      stars: task.stars,
+      done: false
+    });
+  });
+  
+  // Save selected game
+  currentChild.selectedGame = selectedWeekGame;
+  
+  save();
+  closeResetWeekModal();
+  renderDashboard();
+}
+
+// ═══════════════════════════════════════
+// EDIT CHILD
+// ═══════════════════════════════════════
+const emojis = ['👧', '👦', '🎀', '⚽', '🎮', '📚', '🎨', '🚀', '🦄', '🐶', '🐱', '🦊', '🐼', '🌟', '💎'];
+const colors = [
+  { id: 'orange', bg: 'linear-gradient(135deg, #ff6b35, #f7931e)' },
+  { id: 'purple', bg: 'linear-gradient(135deg, #a855f7, #ec4899)' },
+  { id: 'blue', bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
+  { id: 'green', bg: 'linear-gradient(135deg, #10b981, #059669)' },
+  { id: 'pink', bg: 'linear-gradient(135deg, #ec4899, #be185d)' },
+  { id: 'yellow', bg: 'linear-gradient(135deg, #fbbf24, #f59e0b)' }
+];
+
+let selectedEmoji = '';
+let selectedColor = '';
+
+function openEditChildModal() {
+  selectedEmoji = currentChild.emoji;
+  selectedColor = currentChild.color || 'purple';
+  
+  document.getElementById('edit-child-name').value = currentChild.name;
+  document.getElementById('edit-child-age').value = currentChild.age;
+  
+  renderEmojiPicker();
+  renderColorPicker();
+  
+  document.getElementById('edit-child-modal').classList.add('active');
+}
+
+function closeEditChildModal() {
+  document.getElementById('edit-child-modal').classList.remove('active');
+}
+
+function renderEmojiPicker() {
+  const container = document.getElementById('edit-emoji-picker');
+  container.innerHTML = '';
+  
+  emojis.forEach(emoji => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-picker-btn' + (emoji === selectedEmoji ? ' selected' : '');
+    btn.textContent = emoji;
+    btn.onclick = () => {
+      selectedEmoji = emoji;
+      renderEmojiPicker();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderColorPicker() {
+  const container = document.getElementById('edit-color-picker');
+  container.innerHTML = '';
+  
+  colors.forEach(color => {
+    const btn = document.createElement('button');
+    btn.className = 'color-picker-btn' + (color.id === selectedColor ? ' selected' : '');
+    btn.style.background = color.bg;
+    btn.onclick = () => {
+      selectedColor = color.id;
+      renderColorPicker();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function saveEditChild() {
+  const name = document.getElementById('edit-child-name').value.trim();
+  const age = parseInt(document.getElementById('edit-child-age').value);
+  
+  if(!name || !age || age < 1) {
+    alert('Udfyld alle felter korrekt!');
+    return;
+  }
+  
+  currentChild.name = name;
+  currentChild.age = age;
+  currentChild.emoji = selectedEmoji;
+  currentChild.color = selectedColor;
+  
+  save();
+  closeEditChildModal();
+  renderDashboard();
+  renderChildren();
+}
+
+// ═══════════════════════════════════════
+// GAMES
+// ═══════════════════════════════════════
+let gameLoop = null;
+
 function startGame() {
-  const games = ['football', 'pirate', 'rocket', 'superhero']
-  const selectedGame = games[Math.floor(Math.random() * games.length)]
-  const gameNames = { football: '⚽ Fodbold', pirate: '🏴‍☠️ Pirat', rocket: '🚀 Rumrejse', superhero: '🦸 Superhelt' }
-  const gameDescs = { football: 'Skyd bolde ind i målet!', pirate: 'Sænk piratskkibe!', rocket: 'Undvik asteroider!', superhero: 'Besejr skurkene!' }
-  document.getElementById('game-title').textContent = gameNames[selectedGame]
-  document.getElementById('game-desc').textContent = gameDescs[selectedGame]
-  document.getElementById('game-info').textContent = ''
-  document.getElementById('play-btn').style.display = 'none'
-  showScreen('game')
-  const canvas = document.getElementById('game-canvas')
-  const ctx = canvas.getContext('2d')
-  if(selectedGame === 'football') runFootball(canvas, ctx, currentChild.currency)
-  else if(selectedGame === 'pirate') runPirate(canvas, ctx, currentChild.currency)
-  else if(selectedGame === 'rocket') runRocket(canvas, ctx, currentChild.currency)
-  else if(selectedGame === 'superhero') runSuperhero(canvas, ctx, currentChild.currency)
-}
-
-function restartGame() {
-  const canvas = document.getElementById('game-canvas')
-  const ctx = canvas.getContext('2d')
-  const gameTitle = document.getElementById('game-title').textContent
-  const selectedGame = gameTitle.includes('Fodbold') ? 'football' : gameTitle.includes('Pirat') ? 'pirate' : gameTitle.includes('Rumrejse') ? 'rocket' : 'superhero'
-  if(gameLoop) cancelAnimationFrame(gameLoop)
-  if(selectedGame === 'football') runFootball(canvas, ctx, currentChild.currency)
-  else if(selectedGame === 'pirate') runPirate(canvas, ctx, currentChild.currency)
-  else if(selectedGame === 'rocket') runRocket(canvas, ctx, currentChild.currency)
-  else if(selectedGame === 'superhero') runSuperhero(canvas, ctx, currentChild.currency)
-}
-
-function endGame() {
-  if(gameLoop) cancelAnimationFrame(gameLoop)
-  currentChild.currency = 0
-  currentChild.tasks = []
-  saveChild()
-  showScreen('login')
-  updateLoginBadges()
+  const games = ['football', 'unicorn', 'pirate', 'rocket', 'superhero'];
+  const gameNames = { 
+    football: '⚽ Fodbold', 
+    unicorn: '🦄 Enhjørning', 
+    pirate: '🏴‍☠️ Pirat', 
+    rocket: '🚀 Rumrejse', 
+    superhero: '🦸 Superhelt' 
+  };
+  const gameDescs = { 
+    football: 'Skyd bolde ind i målet!', 
+    unicorn: 'Flyv gennem ringe!',
+    pirate: 'Sænk piratskibe!', 
+    rocket: 'Undvig asteroider!', 
+    superhero: 'Besejr skurkene!' 
+  };
+  
+  // Use selected game or random if none selected
+  const selectedGame = currentChild.selectedGame || games[Math.floor(Math.random() * games.length)];
+  document.getElementById('game-title').textContent = gameNames[selectedGame];
+  document.getElementById('game-desc').textContent = gameDescs[selectedGame];
+  
+  showScreen('game');
+  
+  const canvas = document.getElementById('game-canvas');
+  const ctx = canvas.getContext('2d');
+  const power = currentChild.currency;
+  
+  if(selectedGame === 'football') runFootball(canvas, ctx, power);
+  else if(selectedGame === 'unicorn') runUnicorn(canvas, ctx, power);
+  else if(selectedGame === 'pirate') runPirate(canvas, ctx, power);
+  else if(selectedGame === 'rocket') runRocket(canvas, ctx, power);
+  else if(selectedGame === 'superhero') runSuperhero(canvas, ctx, power);
 }
 
 // ── FOOTBALL ──
 function runFootball(canvas, ctx, power) {
-  const W=canvas.width, H=canvas.height
-  let ball={x:W/2,y:H/2,vx:0,vy:0,r:10}, goal={x:W/2,y:40,w:80,h:60}, power_up=0
-  let score=0, shots=Math.round(5+power*3), shotsLeft=shots, frame=0
-  canvas.onmousemove=(e)=>{ const r=canvas.getBoundingClientRect(); ball.x=(e.clientX-r.left)*(W/r.width); ball.y=(e.clientY-r.top)*(H/r.height) }
-  canvas.ontouchmove=(e)=>{ e.preventDefault(); const r=canvas.getBoundingClientRect(); ball.x=(e.touches[0].clientX-r.left)*(W/r.width); ball.y=(e.touches[0].clientY-r.top)*(H/r.height) }
-  canvas.onclick=()=>{ if(shotsLeft>0) { shotsLeft--; ball.vy=-18; power_up=1; launchConfetti() } }
-  function draw() {
-    frame++; power_up*=0.98
-    ctx.fillStyle='#1a6b1a'; ctx.fillRect(0,0,W,H)
-    ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=2; ctx.strokeRect(goal.x-goal.w/2,goal.y,goal.w,goal.h)
-    ctx.font='40px serif'; ctx.textAlign='center'; ctx.fillText('🥅',goal.x,goal.y+50)
-    ball.y+=ball.vy; ball.vy+=0.3
-    if(ball.y+ball.r>H) { ball.y=H-ball.r; ball.vy=0 }
-    ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r+power_up*8,0,Math.PI*2); ctx.fillStyle=`rgba(240,192,0,${0.3+power_up*0.5})`; ctx.fill()
-    ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fillStyle='#ffb800'; ctx.fill()
-    if(Math.abs(ball.x-goal.x)<goal.w/2 && ball.y<goal.y+goal.h && ball.y>goal.y) { score++; ball.y=H-ball.r; ball.vy=0; launchConfetti() }
-    ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(0,0,W,36)
-    ctx.fillStyle='#f0c000'; ctx.font='bold 15px Nunito'; ctx.textAlign='center'
-    ctx.fillText(`⚽ ${score} mål · ${shotsLeft} skud tilbage`,W/2,23)
-    if(shotsLeft<=0 && ball.vy===0) {
-      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100)
-      ctx.fillStyle='#f0c000'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center'
-      ctx.fillText(`⚽ ${score} mål!`,W/2,H/2-10)
-      ctx.fillStyle='#fff'; ctx.font='14px Nunito'; ctx.fillText('Tryk for at spille igen',W/2,H/2+24)
-      canvas.onclick=()=>{ shotsLeft=shots; score=0; ball.y=H-ball.r; ball.vy=0 }
-    }
-    gameLoop=requestAnimationFrame(draw)
+  const W=canvas.width, H=canvas.height;
+  let phase='aim', angle=0;
+  let ballX=W/2, ballY=H-80, ballVX=0, ballVY=0;
+  let frame=0, keeper={x:W/2, dir:1, speed:2.5};
+  const shots = Math.max(1, power); // antal stjerner = antal skud
+  let shotsLeft=shots, goals=0, lastResult=''; // track sidste resultat
+
+  const reset = () => {
+    phase='aim'; angle=0; ballX=W/2; ballY=H-80; ballVX=0; ballVY=0; frame=0; lastResult='';
   }
-  gameLoop=requestAnimationFrame(draw)
+
+  canvas.onclick = () => {
+    if(phase==='aim') { 
+      phase='shoot'; 
+      const shootAngle = angle - Math.PI/2;
+      ballVX = Math.sin(shootAngle) * 15;
+      ballVY = -Math.cos(shootAngle) * 15;
+      shotsLeft--;
+    } else if(phase==='result' && shotsLeft>0) {
+      reset();
+    }
+  }
+
+  function draw() {
+    ctx.fillStyle='#1d7a1d'; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=2;
+    ctx.strokeRect(15,15,W-30,H-30);
+    
+    // Mål
+    ctx.strokeStyle='#fff'; ctx.lineWidth=4;
+    ctx.strokeRect(W/2-70,30,140,60);
+    ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1;
+    for(let x=W/2-70;x<=W/2+70;x+=20) { 
+      ctx.beginPath(); ctx.moveTo(x,30); ctx.lineTo(x,90); ctx.stroke(); 
+    }
+
+    // Målmand
+    keeper.x += keeper.speed*keeper.dir;
+    if(keeper.x>W/2+65||keeper.x<W/2-65) keeper.dir*=-1;
+    ctx.font='32px serif'; ctx.textAlign='center';
+    ctx.fillText('🧤', keeper.x, 80);
+
+    if(phase==='aim') {
+      angle += 0.025;
+      if(angle>Math.PI*2) angle=0;
+      
+      // Retningslinje
+      ctx.save(); 
+      ctx.strokeStyle='rgba(255,220,0,0.8)'; 
+      ctx.lineWidth=3; 
+      ctx.setLineDash([8,6]);
+      ctx.beginPath(); 
+      ctx.moveTo(W/2, H-80); 
+      const targetX = W/2 + Math.sin(angle-Math.PI/2)*250;
+      const targetY = H-80 - Math.cos(angle-Math.PI/2)*250;
+      ctx.lineTo(targetX, targetY);
+      ctx.stroke(); 
+      ctx.restore(); 
+      ctx.setLineDash([]);
+      
+      ctx.font='52px serif'; ctx.fillText('⚽',W/2,H-55);
+      ctx.fillStyle='#fff'; ctx.font='bold 16px Nunito'; ctx.textAlign='center';
+      ctx.fillText(`Tryk for at skyde! ${shotsLeft} skud · ${goals} mål`,W/2,H-16);
+      
+    } else if(phase==='shoot') {
+      ballX+=ballVX; 
+      ballY+=ballVY; 
+      // INGEN tyngdekraft - bolden flyver lige
+      
+      ctx.font='52px serif'; ctx.fillText('⚽',ballX,ballY);
+      
+      // Check mål
+      if(ballY<100 && ballX>W/2-70 && ballX<W/2+70) {
+        if(Math.abs(ballX-keeper.x)>35) {
+          goals++; 
+          lastResult='goal';
+          phase='result';
+        } else {
+          lastResult='saved';
+          phase='result';
+        }
+      } else if(ballY<-50 || ballX<-50 || ballX>W+50) {
+        lastResult='miss';
+        phase='result';
+      }
+      
+    } else if(phase==='result') {
+      // Flash baggrund baseret på resultat
+      if(lastResult==='goal') {
+        ctx.fillStyle='rgba(0,255,0,0.2)'; 
+        ctx.fillRect(0,0,W,H);
+      } else if(lastResult==='saved') {
+        ctx.fillStyle='rgba(255,0,0,0.2)'; 
+        ctx.fillRect(0,0,W,H);
+      }
+      
+      ctx.font='52px serif'; ctx.fillText('⚽',ballX,ballY);
+      
+      if(shotsLeft>0) {
+        ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(W/2-140,H/2-50,280,100); 
+        ctx.fillStyle='#fff'; ctx.font='bold 28px Nunito'; ctx.textAlign='center';
+        if(lastResult==='goal') {
+          ctx.fillStyle='#00ff00';
+          ctx.fillText('⚽ MÅL!', W/2, H/2-5);
+        } else if(lastResult==='saved') {
+          ctx.fillStyle='#ff6b6b';
+          ctx.fillText('🧤 REDDET!', W/2, H/2-5);
+        } else {
+          ctx.fillStyle='#ffb800';
+          ctx.fillText('❌ FORBI!', W/2, H/2-5);
+        }
+        ctx.fillStyle='#fff'; ctx.font='14px Nunito'; 
+        ctx.fillText(`Tryk for næste skud`,W/2,H/2+30);
+      } else {
+        ctx.fillStyle='rgba(0,0,0,0.75)'; ctx.fillRect(0,H/2-60,W,120); 
+        ctx.fillStyle='#ffb800'; ctx.font='bold 32px Fredoka One'; ctx.textAlign='center';
+        ctx.fillText(`⚽ ${goals} mål!`, W/2, H/2);
+        ctx.fillStyle='#fff'; ctx.font='16px Nunito';
+        ctx.fillText(`Du scorede ${goals} ud af ${shots} skud`,W/2,H/2+35);
+      }
+    }
+    
+    gameLoop = requestAnimationFrame(draw);
+  }
+  gameLoop = requestAnimationFrame(draw);
+}
+
+// ── UNICORN ──
+function runUnicorn(canvas, ctx, power) {
+  const W=canvas.width, H=canvas.height;
+  const speed = 2.5;
+  const lives = Math.max(1, power); // antal stjerner = antal liv
+  let unicorn={x:60,y:H/2}, vy=0, alive=true, score=0, frame=0, livesLeft=lives;
+  const rings=[], particles=[];
+
+  for(let i=0;i<4;i++) rings.push({ x:W+i*180, y:50+Math.random()*(H-100), r:35, open:true });
+
+  canvas.onclick = () => { if(alive) vy=-7; }
+  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); if(alive) vy=-7; }, {passive:false});
+
+  function draw() {
+    frame++;
+    const grd=ctx.createLinearGradient(0,0,W,H);
+    grd.addColorStop(0,'#2a0060'); grd.addColorStop(1,'#c060d0');
+    ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+
+    for(let i=0;i<3;i++) {
+      ctx.beginPath(); ctx.arc((frame*0.5+i*133)%W, ((frame*0.3+i*97)%H), 2, 0, Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fill();
+    }
+
+    if(alive) { vy+=0.25; unicorn.y+=vy; } // Langsommere fald
+
+    rings.forEach(r=>{
+      r.x-=speed;
+      if(r.x<-40) { r.x=W+40; r.y=60+Math.random()*(H-120); r.open=true; }
+      ctx.beginPath(); ctx.arc(r.x,r.y,r.r,0,Math.PI*2);
+      ctx.strokeStyle=r.open?'rgba(255,220,0,0.9)':'rgba(255,100,100,0.5)'; ctx.lineWidth=6; ctx.stroke();
+      ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=2; ctx.stroke();
+      if(r.open&&Math.hypot(unicorn.x-r.x,unicorn.y-r.y)<r.r+10) {
+        r.open=false; score++;
+        for(let p=0;p<8;p++) particles.push({x:r.x,y:r.y,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,life:30});
+      }
+    });
+
+    for(let i=particles.length-1;i>=0;i--) {
+      const p=particles[i];
+      p.x+=p.vx; p.y+=p.vy; p.life--;
+      ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,200,255,${p.life/30})`; ctx.fill();
+      if(p.life<=0) particles.splice(i,1);
+    }
+
+    ctx.font='44px serif'; ctx.textAlign='center'; ctx.fillText('🦄',unicorn.x,unicorn.y+16);
+    
+    // Check død - kun én gang per død
+    if(alive && (unicorn.y>H+20||unicorn.y<-20)) {
+      livesLeft--;
+      if(livesLeft > 0) {
+        // Pause spillet
+        alive = false;
+        // Vis "tryk for næste liv" besked
+      } else {
+        alive = false;
+      }
+    }
+
+    ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(0,0,W,38);
+    ctx.fillStyle='#fff'; ctx.font='bold 16px Nunito'; ctx.textAlign='center';
+    ctx.fillText(`⭐ ${score} ringe · ❤️ ${livesLeft} liv`,W/2,24);
+
+    if(!alive && livesLeft > 0) {
+      // Pause mellem liv
+      ctx.fillStyle='rgba(0,0,0,0.6)'; ctx.fillRect(0,H/2-50,W,110);
+      ctx.fillStyle='#fff'; ctx.font='bold 24px Fredoka One'; ctx.textAlign='center';
+      ctx.fillText(`💔 ${livesLeft} liv tilbage`, W/2, H/2-10);
+      ctx.font='14px Nunito';
+      ctx.fillText(`Tryk for at fortsætte`, W/2, H/2+30);
+      
+      canvas.onclick = () => {
+        // Restart med næste liv
+        unicorn.y = H/2;
+        vy = 0;
+        alive = true;
+        canvas.onclick = () => { if(alive) vy=-7; };
+      };
+    } else if(!alive) {
+      // Game over
+      ctx.fillStyle='rgba(0,0,0,0.6)'; ctx.fillRect(0,H/2-50,W,110);
+      ctx.fillStyle='#fff'; ctx.font='bold 24px Fredoka One'; ctx.textAlign='center';
+      ctx.fillText(`🦄 ${score} ringe!`, W/2, H/2-10);
+      ctx.font='14px Nunito';
+      ctx.fillText(`Du brugte ${lives} liv`, W/2, H/2+30);
+    }
+    gameLoop = requestAnimationFrame(draw);
+  }
+  gameLoop = requestAnimationFrame(draw);
 }
 
 // ── PIRATE ──
 function runPirate(canvas, ctx, power) {
-  const W=canvas.width, H=canvas.height
-  const shots=Math.round(8+power*8), projectiles=[]
-  let shotsLeft=shots, hits=0, ships=[], frame=0
-  function spawnShip() { ships.push({x:Math.random()*(W-40), y:-50, w:40, h:30, hit:false}) }
-  for(let i=0;i<3;i++) spawnShip()
-  canvas.onclick=(e)=>{ if(shotsLeft<=0) return; const r=canvas.getBoundingClientRect(); const ty=(e.clientY-r.top)*(H/r.height); projectiles.push({x:W/2,y:H-60,ty,t:0}); shotsLeft-- }
-  function draw() {
-    frame++
-    ctx.fillStyle='#0f4f0f'; ctx.fillRect(0,0,W,H)
-    ctx.fillStyle='#1a3a5c'; ctx.fillRect(0,H-100,W,100)
-    ships.forEach(s=>{ s.y+=1.5; if(s.y>H) { ships.splice(ships.indexOf(s),1); spawnShip() }; ctx.font='28px serif'; ctx.textAlign='center'; ctx.fillText('🚢',s.x+s.w/2,s.y+s.h/2) })
-    for(let i=projectiles.length-1;i>=0;i--) { const p=projectiles[i]; p.t+=0.1; const py=p.y+(p.ty-p.y)*p.t; ctx.beginPath(); ctx.arc(p.x,py,4,0,Math.PI*2); ctx.fillStyle='#ffb800'; ctx.fill(); if(p.t>=1) { projectiles.splice(i,1); ships.forEach(s=>{ if(!s.hit && Math.abs(s.x+s.w/2-p.x)<s.w/2 && Math.abs(s.y+s.h/2-py)<s.h/2) { s.hit=true; hits++; launchConfetti(); ships.splice(ships.indexOf(s),1); spawnShip() } }) } }
-    ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.fillRect(0,0,W,36)
-    ctx.fillStyle='#f0a000'; ctx.font='bold 15px Nunito'; ctx.textAlign='center'
-    ctx.fillText(`🏴‍☠️ ${hits} skibe sænket · ${shotsLeft} skud tilbage`,W/2,23)
-    if(shotsLeft<=0 && projectiles.length===0) {
-      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100)
-      ctx.fillStyle='#f0a000'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center'
-      ctx.fillText(`🏴‍☠️ ${hits} skibe sænket!`,W/2,H/2-10)
-      ctx.fillStyle='#fff'; ctx.font='14px Nunito'; ctx.fillText('Tryk for at spille igen',W/2,H/2+24)
-      canvas.onclick=()=>{ shotsLeft=shots; hits=0; ships=[]; for(let i=0;i<3;i++) spawnShip(); projectiles=[] }
-    }
-    gameLoop=requestAnimationFrame(draw)
+  const W=canvas.width, H=canvas.height;
+  const shots=Math.max(1, power); // antal stjerner = antal skud
+  let shotsLeft=shots, hits=0;
+  let ships=[], projectiles=[];
+
+  const spawnShip=()=> ships.push({x:30+Math.random()*(W-60),y:60+Math.random()*80,alive:true,dx:(Math.random()-0.5)*5});
+  for(let i=0;i<3;i++) spawnShip();
+
+  canvas.onclick=(e)=>{
+    if(shotsLeft<=0) return;
+    const rect=canvas.getBoundingClientRect();
+    const cx=(e.clientX-rect.left)*(W/rect.width);
+    const cy=(e.clientY-rect.top)*(H/rect.height);
+    projectiles.push({x:W/2,y:H-60,tx:cx,ty:cy,t:0});
+    shotsLeft--;
   }
-  gameLoop=requestAnimationFrame(draw)
+
+  function draw() {
+    const sky=ctx.createLinearGradient(0,0,0,H*0.55);
+    sky.addColorStop(0,'#1a3a5c'); sky.addColorStop(1,'#2a6090');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H*0.55);
+    const sea=ctx.createLinearGradient(0,H*0.55,0,H);
+    sea.addColorStop(0,'#1a5c8c'); sea.addColorStop(1,'#0d3050');
+    ctx.fillStyle=sea; ctx.fillRect(0,H*0.55,W,H*0.45);
+
+    ships.forEach((s,idx)=>{
+      s.x+=s.dx; if(s.x<20||s.x>W-20) s.dx*=-1;
+      ctx.font='40px serif'; ctx.textAlign='center'; 
+      ctx.fillText('🚢',s.x,s.y);
+    });
+
+    ctx.font='44px serif'; ctx.fillText('⚓',W/2,H-30);
+
+    for(let i=projectiles.length-1;i>=0;i--) {
+      const p=projectiles[i]; p.t+=0.08;
+      const px=p.x+(p.tx-p.x)*p.t, py=p.y+(p.ty-p.y)*p.t - Math.sin(p.t*Math.PI)*60;
+      ctx.font='20px serif'; ctx.fillText('💣',px,py);
+      if(p.t>=1) {
+        projectiles.splice(i,1);
+        // Check collision med skibe
+        for(let j=ships.length-1; j>=0; j--) {
+          const s = ships[j];
+          if(Math.hypot(s.x-p.tx,s.y-p.ty)<40) { 
+            ships.splice(j, 1); // Fjern skibet MED DET SAMME
+            hits++; 
+            spawnShip(); // Spawn nyt skib
+            break; // Kun ét skib per skud
+          }
+        }
+      }
+    }
+
+    ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fillRect(0,0,W,36);
+    ctx.fillStyle='#f0c060'; ctx.font='bold 15px Nunito'; ctx.textAlign='center';
+    ctx.fillText(`🪙 ${hits} skibe  ·  💣 ${shotsLeft} tilbage`,W/2,23);
+
+    if(shotsLeft<=0&&projectiles.length===0) {
+      ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(0,H/2-50,W,100);
+      ctx.fillStyle='#f0c060'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center';
+      ctx.fillText(`🏴‍☠️ ${hits} skibe!`,W/2,H/2-10);
+    }
+    gameLoop=requestAnimationFrame(draw);
+  }
+  gameLoop=requestAnimationFrame(draw);
 }
 
 // ── ROCKET ──
 function runRocket(canvas, ctx, power) {
-  const W=canvas.width, H=canvas.height
-  let rocket={x:W/2,y:H-60}, alive=true, score=0, frame=0
-  const asteroids=[], stars=[]
-  const speed=1.5+power*2
-  for(let i=0;i<30;i++) stars.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*2+0.5})
-  for(let i=0;i<5;i++) asteroids.push({x:Math.random()*W,y:-50-i*80,r:15+Math.random()*20,s:speed+Math.random()})
-  canvas.addEventListener('mousemove',e=>{ const r=canvas.getBoundingClientRect(); rocket.x=(e.clientX-r.left)*(W/r.width) },{passive:true})
-  canvas.addEventListener('touchmove',e=>{ e.preventDefault(); const r=canvas.getBoundingClientRect(); rocket.x=(e.touches[0].clientX-r.left)*(W/r.width) },{passive:false})
+  const W=canvas.width, H=canvas.height;
+  const lives = Math.max(1, power); // antal stjerner = antal liv
+  let rocket={x:W/2,y:H-60}, alive=true, crystals=0, frame=0, livesLeft=lives;
+  const asteroids=[], stars=[], crystalObjs=[];
+  const speed=2.5;
+  for(let i=0;i<30;i++) stars.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*2+0.5});
+  // Nogle asteroider starter synlige
+  for(let i=0;i<4;i++) asteroids.push({x:Math.random()*W,y:100+i*80,r:25+Math.random()*20,s:speed+Math.random()*1});
+  for(let i=0;i<4;i++) asteroids.push({x:Math.random()*W,y:-50-i*100,r:25+Math.random()*20,s:speed+Math.random()*1});
+  // Spawn krystaller
+  for(let i=0;i<3;i++) crystalObjs.push({x:Math.random()*W,y:-100-i*150,s:speed*0.7});
+
+  canvas.addEventListener('mousemove',e=>{ const r=canvas.getBoundingClientRect(); rocket.x=(e.clientX-r.left)*(W/r.width); },{passive:true});
+  canvas.addEventListener('touchmove',e=>{ e.preventDefault(); const r=canvas.getBoundingClientRect(); rocket.x=(e.touches[0].clientX-r.left)*(W/r.width); },{passive:false});
+
   function draw() {
-    frame++
-    ctx.fillStyle='#010118'; ctx.fillRect(0,0,W,H)
-    stars.forEach(s=>{ ctx.beginPath(); ctx.arc((s.x+frame*0.2)%W,s.y,s.s,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.fill() })
-    if(alive) score++
-    asteroids.forEach(a=>{ a.y+=a.s; if(a.y>H+40){ a.y=-40; a.x=Math.random()*W }; ctx.font=`${a.r*1.5}px serif`; ctx.textAlign='center'; ctx.fillText('🌑',a.x,a.y); if(alive&&Math.hypot(rocket.x-a.x,rocket.y-a.y)<a.r+12) alive=false })
-    ctx.font='40px serif'; ctx.fillText('🚀',rocket.x,rocket.y)
-    ctx.fillStyle=`rgba(0,200,255,${0.3+Math.sin(frame*0.3)*0.2})`; ctx.beginPath(); ctx.ellipse(rocket.x,rocket.y+28,8,12+Math.sin(frame*0.4)*4,0,0,Math.PI*2); ctx.fill()
-    ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(0,0,W,36)
-    ctx.fillStyle='#00e5ff'; ctx.font='bold 15px Nunito'; ctx.textAlign='center'
-    ctx.fillText(`💎 ${Math.floor(score/10)} · Bevæg for at undvige!`,W/2,23)
-    if(!alive) {
-      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100)
-      ctx.fillStyle='#00e5ff'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center'
-      ctx.fillText(`🚀 ${Math.floor(score/10)} krystaller!`,W/2,H/2-10)
-      ctx.fillStyle='#fff'; ctx.font='14px Nunito'; ctx.fillText('Tryk for at starte igen',W/2,H/2+24)
-      canvas.onclick=()=>{ rocket={x:W/2,y:H-60}; alive=true; score=0; asteroids.forEach((a,i)=>{ a.y=-50-i*80; a.x=Math.random()*W }) }
+    frame++;
+    ctx.fillStyle='#010118'; ctx.fillRect(0,0,W,H);
+    stars.forEach(s=>{ ctx.beginPath(); ctx.arc((s.x+frame*0.2)%W,s.y,s.s,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.fill(); });
+
+    if(alive) {
+      // Krystaller - kun aktive når alive
+      for(let i=crystalObjs.length-1; i>=0; i--) {
+        const c = crystalObjs[i];
+        c.y += c.s;
+        if(c.y > H+30) {
+          c.y = -30;
+          c.x = Math.random()*W;
+        }
+        
+        ctx.font='24px serif';
+        ctx.fillText('💎', c.x, c.y);
+        
+        // Samle krystaller
+        if(Math.hypot(rocket.x-c.x, rocket.y-c.y)<30) {
+          crystals++;
+          c.y = -30;
+          c.x = Math.random()*W;
+        }
+      }
+
+      // Asteroider - kun bevæger sig når alive
+      asteroids.forEach(a=>{
+        a.y+=a.s; 
+        if(a.y>H+60){ a.y=-60; a.x=Math.random()*W; }
+        
+        // Tegn asteroide - MEGET SYNLIG
+        ctx.beginPath();
+        ctx.arc(a.x, a.y, a.r, 0, Math.PI*2);
+        ctx.fillStyle='#999'; // Lysegrå
+        ctx.fill();
+        ctx.strokeStyle='#FFF'; // Hvid kant
+        ctx.lineWidth=3;
+        ctx.stroke();
+        
+        // Collision check
+        const distance = Math.hypot(rocket.x-a.x, rocket.y-a.y);
+        if(distance < a.r+30) {
+          livesLeft--;
+          if(livesLeft > 0) {
+            // Pause spillet - vis "tryk for næste liv"
+            alive = false;
+          } else {
+            alive = false;
+          }
+        }
+      });
+    } else {
+      // Når død, tegn asteroider statisk
+      asteroids.forEach(a=>{
+        ctx.beginPath();
+        ctx.arc(a.x, a.y, a.r, 0, Math.PI*2);
+        ctx.fillStyle='#999';
+        ctx.fill();
+        ctx.strokeStyle='#FFF';
+        ctx.lineWidth=3;
+        ctx.stroke();
+      });
+      
+      // Tegn krystaller statisk
+      crystalObjs.forEach(c=>{
+        ctx.font='24px serif';
+        ctx.fillText('💎', c.x, c.y);
+      });
     }
-    gameLoop=requestAnimationFrame(draw)
+
+    ctx.font='40px serif'; ctx.textAlign='center'; ctx.fillText('🚀',rocket.x,rocket.y);
+    ctx.fillStyle=`rgba(255,100,0,${0.5+Math.sin(frame*0.3)*0.3})`;
+    ctx.beginPath(); ctx.ellipse(rocket.x,rocket.y+28,10,14+Math.sin(frame*0.4)*6,0,0,Math.PI*2); ctx.fill();
+
+    ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(0,0,W,36);
+    ctx.fillStyle='#00e5ff'; ctx.font='bold 15px Nunito'; ctx.textAlign='center';
+    ctx.fillText(`💎 ${crystals} krystaller · ❤️ ${livesLeft} liv`,W/2,23);
+
+    if(!alive && livesLeft > 0) {
+      // Pause mellem liv
+      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,110);
+      ctx.fillStyle='#00e5ff'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center';
+      ctx.fillText(`💔 ${livesLeft} liv tilbage`,W/2,H/2-10);
+      ctx.font='14px Nunito';
+      ctx.fillText(`Tryk for at fortsætte`,W/2,H/2+30);
+      
+      canvas.onclick = () => {
+        alive = true;
+        rocket.y = H-60;
+        canvas.onclick = null;
+      };
+    } else if(!alive) {
+      // Game over
+      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100);
+      ctx.fillStyle='#00e5ff'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center';
+      ctx.fillText(`🚀 ${crystals} krystaller!`,W/2,H/2-10);
+      ctx.font='14px Nunito';
+      ctx.fillText(`Du brugte ${lives} liv`,W/2,H/2+30);
+    }
+    gameLoop=requestAnimationFrame(draw);
   }
-  gameLoop=requestAnimationFrame(draw)
+  gameLoop=requestAnimationFrame(draw);
 }
 
 // ── SUPERHERO ──
 function runSuperhero(canvas, ctx, power) {
-  const W=canvas.width, H=canvas.height
-  const shots=Math.round(8+power*8)
-  let shotsLeft=shots, zapped=0, frame=0
-  let hero={x:W/2,y:H-60}
-  const villains=[], lasers=[]
-  for(let i=0;i<4;i++) villains.push({x:60+i*(W-80)/3,y:80+Math.random()*100,alive:true,dx:(Math.random()-0.5)*2.5,emoji:['👿','🤖','👾','🦹'][i]})
+  const W=canvas.width, H=canvas.height;
+  const shots=Math.max(1, power); // antal stjerner = antal skud
+  let shotsLeft=shots, zapped=0, frame=0;
+  let hero={x:W/2,y:H-60};
+  const villains=[], lasers=[];
+  for(let i=0;i<4;i++) villains.push({x:60+i*(W-80)/3,y:80+Math.random()*100,alive:true,dx:(Math.random()-0.5)*2.5,emoji:['👿','🤖','👾','🦹'][i]});
+
   canvas.onclick=(e)=>{
-    if(shotsLeft<=0) return
-    const r=canvas.getBoundingClientRect()
-    const tx=(e.clientX-r.left)*(W/r.width), ty=(e.clientY-r.top)*(H/r.height)
-    lasers.push({x:hero.x,y:hero.y-20,tx,ty,t:0})
-    shotsLeft--
+    if(shotsLeft<=0) return;
+    const r=canvas.getBoundingClientRect();
+    const tx=(e.clientX-r.left)*(W/r.width), ty=(e.clientY-r.top)*(H/r.height);
+    lasers.push({x:hero.x,y:hero.y-20,tx,ty,t:0});
+    shotsLeft--;
   }
+
   function draw() {
-    frame++
-    const grd=ctx.createLinearGradient(0,0,0,H)
-    grd.addColorStop(0,'#0a0020'); grd.addColorStop(1,'#400010')
-    ctx.fillStyle=grd; ctx.fillRect(0,0,W,H)
-    ctx.fillStyle='#1a0030'
-    const buildings=[[0,60],[60,100],[100,40],[160,80],[200,50],[240,90],[290,60],[330,110],[370,70],[430,50]]
-    buildings.forEach(([bx,bh])=>{ ctx.fillRect(bx,H-bh-40,40,bh) })
-    villains.forEach(v=>{ if(!v.alive) return; v.x+=v.dx; if(v.x<20||v.x>W-20) v.dx*=-1; ctx.font='38px serif'; ctx.textAlign='center'; ctx.fillText(v.emoji,v.x,v.y) })
+    frame++;
+    const grd=ctx.createLinearGradient(0,0,0,H);
+    grd.addColorStop(0,'#0a0020'); grd.addColorStop(1,'#400010');
+    ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#1a0030';
+    const buildings=[[0,60],[60,100],[100,40],[160,80],[200,50],[240,90],[290,60],[330,110],[370,70],[430,50]];
+    buildings.forEach(([bx,bh])=>{ ctx.fillRect(bx,H-bh-40,40,bh); });
+
+    villains.forEach(v=>{
+      if(!v.alive) return;
+      v.x+=v.dx; if(v.x<20||v.x>W-20) v.dx*=-1;
+      ctx.font='38px serif'; ctx.textAlign='center'; ctx.fillText(v.emoji,v.x,v.y);
+    });
+
     for(let i=lasers.length-1;i>=0;i--) {
-      const l=lasers[i]; l.t+=0.12
-      const lx=l.x+(l.tx-l.x)*l.t, ly=l.y+(l.ty-l.y)*l.t
-      ctx.beginPath(); ctx.moveTo(l.x,l.y); ctx.lineTo(lx,ly)
-      ctx.strokeStyle='rgba(255,50,100,0.8)'; ctx.lineWidth=3; ctx.stroke()
-      ctx.beginPath(); ctx.arc(lx,ly,6,0,Math.PI*2); ctx.fillStyle='#ff2060'; ctx.fill()
+      const l=lasers[i]; l.t+=0.12;
+      const lx=l.x+(l.tx-l.x)*l.t, ly=l.y+(l.ty-l.y)*l.t;
+      ctx.beginPath(); ctx.moveTo(l.x,l.y); ctx.lineTo(lx,ly);
+      ctx.strokeStyle='rgba(255,50,100,0.8)'; ctx.lineWidth=3; ctx.stroke();
+      ctx.beginPath(); ctx.arc(lx,ly,6,0,Math.PI*2); ctx.fillStyle='#ff2060'; ctx.fill();
       if(l.t>=1) {
-        lasers.splice(i,1)
-        villains.forEach(v=>{ if(v.alive&&Math.hypot(v.x-l.tx,v.y-l.ty)<30){ v.alive=false; zapped++; launchConfetti(); if(villains.every(v=>!v.alive)) villains.forEach((v,j)=>{ v.alive=true; v.x=60+j*(W-80)/3 }) }})
+        lasers.splice(i,1);
+        villains.forEach(v=>{ if(v.alive&&Math.hypot(v.x-l.tx,v.y-l.ty)<30){ v.alive=false; zapped++; if(villains.every(v=>!v.alive)) villains.forEach((v,j)=>{ v.alive=true; v.x=60+j*(W-80)/3; }); }});
       }
     }
-    ctx.font='44px serif'; ctx.fillText('🦸',hero.x,hero.y)
-    ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(0,0,W,36)
-    ctx.fillStyle='#ff2060'; ctx.font='bold 15px Nunito'; ctx.textAlign='center'
-    ctx.fillText(`⚡ ${zapped} skurke · 💥 ${shotsLeft} skud tilbage`,W/2,23)
+
+    ctx.font='44px serif'; ctx.fillText('🦸',hero.x,hero.y);
+
+    ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(0,0,W,36);
+    ctx.fillStyle='#ff2060'; ctx.font='bold 15px Nunito'; ctx.textAlign='center';
+    ctx.fillText(`⚡ ${zapped} skurke · 💥 ${shotsLeft} skud`,W/2,23);
+
     if(shotsLeft<=0&&lasers.length===0) {
-      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100)
-      ctx.fillStyle='#ff2060'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center'
-      ctx.fillText(`🦸 ${zapped} skurke besejret!`,W/2,H/2-10)
-      ctx.fillStyle='#fff'; ctx.font='14px Nunito'; ctx.fillText('Tryk for at starte igen',W/2,H/2+24)
-      canvas.onclick=()=>{ shotsLeft=shots; zapped=0; lasers.length=0; villains.forEach((v,j)=>{ v.alive=true; v.x=60+j*(W-80)/3 }) }
+      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100);
+      ctx.fillStyle='#ff2060'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center';
+      ctx.fillText(`🦸 ${zapped} skurke!`,W/2,H/2-10);
     }
-    gameLoop=requestAnimationFrame(draw)
+    gameLoop=requestAnimationFrame(draw);
   }
-  gameLoop=requestAnimationFrame(draw)
+  gameLoop=requestAnimationFrame(draw);
 }
 
-function showResult(msg) {
-  document.getElementById('game-info').textContent = msg
-  document.getElementById('play-btn').style.display='block'
-  document.getElementById('play-btn').textContent='🔄 Spil igen'
+function endGame() {
+  if(gameLoop) cancelAnimationFrame(gameLoop);
+  currentChild.currency = 0;
+  currentChild.tasks = [];
+  save();
+  showScreen('login');
+  renderChildren();
 }
 
-// ════════════════════════════════════════
-// CONFETTI
-// ════════════════════════════════════════
-function launchConfetti() {
-  const canvas=document.getElementById('confetti-canvas')
-  const ctx=canvas.getContext('2d')
-  canvas.width=window.innerWidth; canvas.height=window.innerHeight
-  const pieces=[]
-  const colors=['#FFB800','#FF7D6E','#6BC5F8','#7EDDB8','#B8A9F8','#FFE066','#FF2060','#00E5FF']
-  for(let i=0;i<100;i++) pieces.push({
-    x:Math.random()*canvas.width, y:-20-Math.random()*200,
-    r:5+Math.random()*7, color:colors[Math.floor(Math.random()*colors.length)],
-    vx:(Math.random()-0.5)*6, vy:3+Math.random()*4,
-    va:(Math.random()-0.5)*0.2, angle:Math.random()*Math.PI*2
-  })
-  let f=0
-  const anim=()=>{
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-    pieces.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.angle+=p.va; p.vy+=0.1
-      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.angle)
-      ctx.fillStyle=p.color; ctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); ctx.restore()
-    })
-    f++; if(f<120) requestAnimationFrame(anim); else ctx.clearRect(0,0,canvas.width,canvas.height)
-  }
-  requestAnimationFrame(anim)
-}
-
-// ════════════════════════════════════════
+// ═══════════════════════════════════════
 // INIT
-// ════════════════════════════════════════
-loadFamilyData()
-updateLoginBadges()
+// ═══════════════════════════════════════
+load();
+renderChildren();
 </script>
+
 </body>
 </html>
