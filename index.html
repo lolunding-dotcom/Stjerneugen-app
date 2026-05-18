@@ -284,8 +284,8 @@ const PARENT_PIN = '0000';
 
 const data = {
   children: [
-    { id: 1, name: 'Leonora', emoji: '👧', age: 6, pin: '1234', currency: 0, tasks: [], selectedGame: null },
-    { id: 2, name: 'Wilhelm', emoji: '👦', age: 9, pin: '5678', currency: 0, tasks: [], selectedGame: null }
+    { id: 1, name: 'Leonora', emoji: '👧', age: 6, currency: 0, tasks: [], selectedGame: null },
+    { id: 2, name: 'Wilhelm', emoji: '👦', age: 9, currency: 0, tasks: [], selectedGame: null }
   ],
   availableTasks: [
     { id: 1, name: 'Borddækning', stars: 1 },
@@ -346,19 +346,15 @@ function renderChildren() {
       <div class="child-name">${child.name}</div>
       <div class="child-age">${child.age} år</div>
     `;
-    card.onclick = () => goToChildPin(child);
+    card.onclick = () => loginAsChild(child);
     grid.appendChild(card);
   });
 }
 
-function goToChildPin(child) {
+function loginAsChild(child) {
   currentChild = child;
-  document.getElementById('pin-avatar').textContent = child.emoji;
-  document.getElementById('pin-name').textContent = child.name;
-  renderPinDots('pin-dots', child.pin.length);
-  document.getElementById('error-msg').textContent = '';
-  renderNumpad('numpad', enterChildPin);
-  showScreen('pin');
+  renderDashboard();
+  showScreen('dash');
 }
 
 // ═══════════════════════════════════════
@@ -418,10 +414,8 @@ function updatePinDots(containerId, filledCount) {
 // PARENT PIN
 // ═══════════════════════════════════════
 function goToParentPin() {
-  renderPinDots('parent-pin-dots', PARENT_PIN.length);
-  document.getElementById('parent-error-msg').textContent = '';
-  renderNumpad('parent-numpad', enterParentPin);
-  showScreen('parent-pin');
+  showScreen('parent');
+  renderParentTasks();
 }
 
 let parentPinAttempt = '';
