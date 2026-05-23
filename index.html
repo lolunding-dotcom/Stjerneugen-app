@@ -176,6 +176,7 @@ body {
 
     <button class="btn-primary" onclick="showAvailableTasks()">➕ Tilføj pligt</button>
     <button class="btn-primary" onclick="confirmStartNewWeek()" style="background: linear-gradient(135deg, #a855f7, #ec4899); margin-top: 12px;">🔄 Start ny uge</button>
+    <div id="game-record-box" style="display:none; margin-top: 12px; padding: 14px 16px; border-radius: 14px; background: rgba(255,184,0,0.12); border: 1px solid rgba(255,184,0,0.35); text-align: center;"></div>
     <button class="btn-primary" id="play-game-btn" onclick="startGame()" style="display: none; background: linear-gradient(135deg, #00e5ff, #a855f7); margin-top: 12px;">🎮 Spil nu!</button>
   </div>
 
@@ -188,6 +189,17 @@ body {
       <div id="game-info" style="min-height: 40px; margin: 20px 0; font-weight: 700;"></div>
       <div style="display: flex; gap: 12px; justify-content: center;">
         <button class="btn-primary" onclick="endGame()">← Afslut</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="history" class="screen">
+    <div style="padding: 20px;">
+      <h2 id="history-title" style="font-family: 'Fredoka One', cursive; font-size: 28px; margin-bottom: 6px; text-align: center;"></h2>
+      <div id="history-record" style="text-align: center; font-size: 18px; color: #ffb800; margin-bottom: 20px; font-weight: 800;"></div>
+      <div id="history-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;"></div>
+      <div style="display: flex; justify-content: center;">
+        <button class="btn-primary" onclick="goToDashboard()">← Tilbage til mine spil</button>
       </div>
     </div>
   </div>
@@ -284,8 +296,8 @@ const PARENT_PIN = '0000';
 
 const data = {
   children: [
-    { id: 1, name: 'Leonora', emoji: '👧', age: 6, currency: 0, tasks: [], selectedGame: null },
-    { id: 2, name: 'Wilhelm', emoji: '👦', age: 9, currency: 0, tasks: [], selectedGame: null }
+    { id: 1, name: 'Leonora', emoji: '👧', age: 6, currency: 0, tasks: [], selectedGame: null, scores: {}, history: {}, usedGames: {} },
+    { id: 2, name: 'Wilhelm', emoji: '👦', age: 9, currency: 0, tasks: [], selectedGame: null, scores: {}, history: {}, usedGames: {} }
   ],
   availableTasks: [
     { id: 1, name: 'Borddækning', stars: 1 },
@@ -312,6 +324,13 @@ function save() {
 function load() {
   const stored = localStorage.getItem('stjerneugen');
   if(stored) Object.assign(data, JSON.parse(stored));
+  // Migrering: sørg for at hvert barn har de nye felter til highscore og historik.
+  // Eksisterende stjerner, opgaver og rekorder røres ALDRIG.
+  data.children.forEach(c => {
+    if(!c.scores)    c.scores = {};    // { football: {score, date}, ... } - personlig rekord pr spil
+    if(!c.history)   c.history = {};   // { football: [{score, date}, ...], ... } - tidligere runder
+    if(!c.usedGames) c.usedGames = {}; // { football: true } - spil opbrugt denne uge
+  });
 }
 
 // ═══════════════════════════════════════
@@ -541,13 +560,33 @@ function renderDashboard() {
   document.getElementById('dash-name').textContent = currentChild.name;
   document.getElementById('currency-count').textContent = currentChild.currency;
   
-  // Check if game is unlocked (2x age)
+  // Check if game is unlocked (alder i stjerner)
   const gameBtn = document.getElementById('play-game-btn');
+  const recordBox = document.getElementById('game-record-box');
   const unlockAt = currentChild.age;
   if(currentChild.currency >= unlockAt) {
     gameBtn.style.display = 'block';
+    
+    // Vis rekord for det valgte spil, så barnet kan se hvad de skal slå
+    const gameKey = currentChild.selectedGame || 'football';
+    const rec = currentChild.scores[gameKey];
+    const label = SCORE_LABELS[gameKey] || 'point';
+    const isUsed = currentChild.usedGames && currentChild.usedGames[gameKey];
+    let html = `<div style="font-weight:800; margin-bottom:4px;">${GAME_NAMES[gameKey]}</div>`;
+    if(rec) {
+      html += `<div style="font-size:15px;">🏆 Din rekord: <b>${rec.score} ${label}</b><br><span style="opacity:0.7; font-size:13px;">sat ${formatDate(rec.date)} – kan du slå den?</span></div>`;
+    } else {
+      html += `<div style="font-size:14px; opacity:0.8;">Ingen rekord endnu – sæt den første!</div>`;
+    }
+    if(isUsed) {
+      html += `<div style="font-size:13px; color:#ff9b9b; margin-top:6px;">Spillet er brugt denne uge</div>`;
+    }
+    recordBox.innerHTML = html;
+    recordBox.style.display = 'block';
+    gameBtn.textContent = isUsed ? '🎮 Spil igen' : '🎮 Spil nu!';
   } else {
     gameBtn.style.display = 'none';
+    recordBox.style.display = 'none';
   }
   
   renderUserTasks();
@@ -873,6 +912,9 @@ function confirmResetWeek() {
   // Save selected game
   currentChild.selectedGame = selectedWeekGame;
   
+  // Ny uge: spil bliver spilbare igen. Rekorder og historik bevares.
+  currentChild.usedGames = {};
+  
   save();
   closeResetWeekModal();
   renderDashboard();
@@ -968,25 +1010,79 @@ function saveEditChild() {
 // ═══════════════════════════════════════
 let gameLoop = null;
 
+const GAME_LIST = ['football', 'unicorn', 'pirate', 'rocket', 'superhero'];
+const GAME_NAMES = {
+  football: '⚽ Fodbold',
+  unicorn: '🦄 Enhjørning',
+  pirate: '🏴‍☠️ Pirat',
+  rocket: '🚀 Rumrejse',
+  superhero: '🦸 Superhelt'
+};
+const GAME_DESCS = {
+  football: 'Skyd bolde ind i målet!',
+  unicorn: 'Flyv gennem ringe!',
+  pirate: 'Sænk piratskibe!',
+  rocket: 'Undvig asteroider!',
+  superhero: 'Besejr skurkene!'
+};
+// Hvad scoren hedder i hvert spil (til visning)
+const SCORE_LABELS = {
+  football: 'mål',
+  unicorn: 'ringe',
+  pirate: 'skibe',
+  rocket: 'krystaller',
+  superhero: 'skurke'
+};
+
+// Hvilket spil spilles netop nu (sættes i startGame, bruges når resultatet gemmes)
+let activeGameKey = null;
+
+// Dansk dato-format, fx "18. maj"
+function formatDate(ts) {
+  const d = new Date(ts);
+  const mdr = ['jan.','feb.','mar.','apr.','maj','jun.','jul.','aug.','sep.','okt.','nov.','dec.'];
+  return `${d.getDate()}. ${mdr[d.getMonth()]}`;
+}
+
+// Kaldes af hvert spil ved game-over. Gemmer runden i historik og opdaterer rekord.
+function recordGameResult(score) {
+  if(!currentChild || !activeGameKey) return;
+  const key = activeGameKey;
+  const now = Date.now();
+  if(!currentChild.history[key]) currentChild.history[key] = [];
+  currentChild.history[key].unshift({ score, date: now }); // nyeste først
+  // Behold højst 20 runder pr spil så localStorage ikke vokser uendeligt
+  if(currentChild.history[key].length > 20) currentChild.history[key].length = 20;
+  // Opdater rekord hvis slået (eller hvis ingen rekord findes endnu)
+  const rec = currentChild.scores[key];
+  let newRecord = false;
+  if(!rec || score > rec.score) {
+    currentChild.scores[key] = { score, date: now };
+    newRecord = true;
+  }
+  save();
+  return newRecord;
+}
+
 function startGame() {
-  const games = ['football', 'unicorn', 'pirate', 'rocket', 'superhero'];
-  const gameNames = { 
-    football: '⚽ Fodbold', 
-    unicorn: '🦄 Enhjørning', 
-    pirate: '🏴‍☠️ Pirat', 
-    rocket: '🚀 Rumrejse', 
-    superhero: '🦸 Superhelt' 
-  };
-  const gameDescs = { 
-    football: 'Skyd bolde ind i målet!', 
-    unicorn: 'Flyv gennem ringe!',
-    pirate: 'Sænk piratskibe!', 
-    rocket: 'Undvig asteroider!', 
-    superhero: 'Besejr skurkene!' 
-  };
+  const games = GAME_LIST;
+  const gameNames = GAME_NAMES;
+  const gameDescs = GAME_DESCS;
   
   // Use selected game or random if none selected
   const selectedGame = currentChild.selectedGame || games[Math.floor(Math.random() * games.length)];
+  
+  // "Opbrugt"-spærre: hvis spillet allerede er spillet færdig denne uge,
+  // spørg om der er sket en fejl, før vi lader dem spille igen.
+  if(currentChild.usedGames && currentChild.usedGames[selectedGame]) {
+    const igen = confirm('Er der sket en fejl i spillet?\n\nTryk OK for at spille igen med dine stjerner fra denne uge.');
+    if(!igen) {
+      return; // De fortrød - bliv på dashboardet
+    }
+    // De bekræftede fejl - lad dem spille igen (ubegrænset). Spærren genåbnes.
+  }
+  
+  activeGameKey = selectedGame;
   document.getElementById('game-title').textContent = gameNames[selectedGame];
   document.getElementById('game-desc').textContent = gameDescs[selectedGame];
   
@@ -1019,6 +1115,7 @@ function runFootball(canvas, ctx, power) {
   let frame=0, keeper={x:W/2, dir:1, speed:2.5};
   const shots = Math.max(1, power); // antal stjerner = antal skud
   let shotsLeft=shots, goals=0, lastResult=''; // track sidste resultat
+  let recorded=false; // sørger for at resultatet kun gemmes én gang
 
   const reset = () => {
     phase='aim'; angle=0; ballX=W/2; ballY=H-80; ballVX=0; ballVY=0; frame=0; lastResult='';
@@ -1129,11 +1226,27 @@ function runFootball(canvas, ctx, power) {
         ctx.fillStyle='#fff'; ctx.font='14px Nunito'; 
         ctx.fillText(`Tryk for næste skud`,W/2,H/2+30);
       } else {
-        ctx.fillStyle='rgba(0,0,0,0.75)'; ctx.fillRect(0,H/2-60,W,120); 
+        // Game over - gem resultat én gang og marker spillet som opbrugt
+        let isNewRecord = false;
+        if(!recorded) {
+          recorded = true;
+          isNewRecord = recordGameResult(goals);
+          currentChild.usedGames[activeGameKey] = true;
+          save();
+        }
+        const rec = currentChild.scores[activeGameKey];
+        ctx.fillStyle='rgba(0,0,0,0.75)'; ctx.fillRect(0,H/2-70,W,150); 
         ctx.fillStyle='#ffb800'; ctx.font='bold 32px Fredoka One'; ctx.textAlign='center';
-        ctx.fillText(`⚽ ${goals} mål!`, W/2, H/2);
-        ctx.fillStyle='#fff'; ctx.font='16px Nunito';
-        ctx.fillText(`Du scorede ${goals} ud af ${shots} skud`,W/2,H/2+35);
+        ctx.fillText(`⚽ ${goals} mål!`, W/2, H/2-20);
+        ctx.fillStyle='#fff'; ctx.font='15px Nunito';
+        ctx.fillText(`Du scorede ${goals} ud af ${shots} skud`,W/2,H/2+8);
+        if(isNewRecord) {
+          ctx.fillStyle='#00ff88'; ctx.font='bold 18px Nunito';
+          ctx.fillText(`🏆 NY REKORD!`,W/2,H/2+38);
+        } else if(rec) {
+          ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='14px Nunito';
+          ctx.fillText(`Din rekord: ${rec.score} mål (${formatDate(rec.date)})`,W/2,H/2+36);
+        }
       }
     }
     
@@ -1148,6 +1261,7 @@ function runUnicorn(canvas, ctx, power) {
   const speed = 2.5;
   const lives = Math.max(1, power); // antal stjerner = antal liv
   let unicorn={x:60,y:H/2}, vy=0, alive=true, score=0, frame=0, livesLeft=lives;
+  let recorded=false; // sørger for at resultatet kun gemmes én gang
   const rings=[], particles=[];
 
   for(let i=0;i<4;i++) rings.push({ x:W+i*180, y:50+Math.random()*(H-100), r:35, open:true });
@@ -1226,12 +1340,27 @@ function runUnicorn(canvas, ctx, power) {
       ctx.font='14px Nunito';
       ctx.fillText(`Tryk for at fortsætte`, W/2, H/2+30);
     } else if(!alive) {
-      // Game over
-      ctx.fillStyle='rgba(0,0,0,0.6)'; ctx.fillRect(0,H/2-50,W,110);
-      ctx.fillStyle='#fff'; ctx.font='bold 24px Fredoka One'; ctx.textAlign='center';
-      ctx.fillText(`🦄 ${score} ringe!`, W/2, H/2-10);
+      // Game over - gem resultat én gang og marker spillet som opbrugt
+      let isNewRecord = false;
+      if(!recorded) {
+        recorded = true;
+        isNewRecord = recordGameResult(score);
+        currentChild.usedGames[activeGameKey] = true;
+        save();
+      }
+      const rec = currentChild.scores[activeGameKey];
+      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-65,W,140);
+      ctx.fillStyle='#fff'; ctx.font='bold 26px Fredoka One'; ctx.textAlign='center';
+      ctx.fillText(`🦄 ${score} ringe!`, W/2, H/2-22);
       ctx.font='14px Nunito';
-      ctx.fillText(`Du brugte ${lives} liv`, W/2, H/2+30);
+      ctx.fillText(`Du brugte ${lives} liv`, W/2, H/2+4);
+      if(isNewRecord) {
+        ctx.fillStyle='#00ff88'; ctx.font='bold 18px Nunito';
+        ctx.fillText(`🏆 NY REKORD!`, W/2, H/2+34);
+      } else if(rec) {
+        ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='14px Nunito';
+        ctx.fillText(`Din rekord: ${rec.score} ringe (${formatDate(rec.date)})`, W/2, H/2+32);
+      }
     }
     gameLoop = requestAnimationFrame(draw);
   }
@@ -1243,6 +1372,7 @@ function runPirate(canvas, ctx, power) {
   const W=canvas.width, H=canvas.height;
   const shots=Math.max(1, power); // antal stjerner = antal skud
   let shotsLeft=shots, hits=0;
+  let recorded=false; // sørger for at resultatet kun gemmes én gang
   let ships=[], projectiles=[];
 
   const spawnShip=()=> ships.push({x:30+Math.random()*(W-60),y:60+Math.random()*80,alive:true,dx:(Math.random()-0.5)*5});
@@ -1301,9 +1431,24 @@ function runPirate(canvas, ctx, power) {
     ctx.fillText(`🪙 ${hits} skibe  ·  💣 ${shotsLeft} tilbage`,W/2,23);
 
     if(shotsLeft<=0&&projectiles.length===0) {
-      ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(0,H/2-50,W,100);
-      ctx.fillStyle='#f0c060'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center';
-      ctx.fillText(`🏴‍☠️ ${hits} skibe!`,W/2,H/2-10);
+      let isNewRecord = false;
+      if(!recorded) {
+        recorded = true;
+        isNewRecord = recordGameResult(hits);
+        currentChild.usedGames[activeGameKey] = true;
+        save();
+      }
+      const rec = currentChild.scores[activeGameKey];
+      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-60,W,130);
+      ctx.fillStyle='#f0c060'; ctx.font='bold 24px Fredoka One'; ctx.textAlign='center';
+      ctx.fillText(`🏴‍☠️ ${hits} skibe!`,W/2,H/2-18);
+      if(isNewRecord) {
+        ctx.fillStyle='#00ff88'; ctx.font='bold 18px Nunito';
+        ctx.fillText(`🏆 NY REKORD!`,W/2,H/2+16);
+      } else if(rec) {
+        ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='14px Nunito';
+        ctx.fillText(`Din rekord: ${rec.score} skibe (${formatDate(rec.date)})`,W/2,H/2+14);
+      }
     }
     gameLoop=requestAnimationFrame(draw);
   }
@@ -1315,6 +1460,7 @@ function runRocket(canvas, ctx, power) {
   const W=canvas.width, H=canvas.height;
   const lives = Math.max(1, power); // antal stjerner = antal liv
   let rocket={x:W/2,y:H-60}, alive=true, crystals=0, frame=0, livesLeft=lives;
+  let recorded=false; // sørger for at resultatet kun gemmes én gang
   const asteroids=[], stars=[], crystalObjs=[];
   const speed=2.5;
   for(let i=0;i<30;i++) stars.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*2+0.5});
@@ -1427,12 +1573,27 @@ function runRocket(canvas, ctx, power) {
       ctx.font='14px Nunito';
       ctx.fillText(`Tryk for at fortsætte`,W/2,H/2+30);
     } else if(!alive) {
-      // Game over
-      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100);
+      // Game over - gem resultat én gang og marker spillet som opbrugt
+      let isNewRecord = false;
+      if(!recorded) {
+        recorded = true;
+        isNewRecord = recordGameResult(crystals);
+        currentChild.usedGames[activeGameKey] = true;
+        save();
+      }
+      const rec = currentChild.scores[activeGameKey];
+      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-60,W,130);
       ctx.fillStyle='#00e5ff'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center';
-      ctx.fillText(`🚀 ${crystals} krystaller!`,W/2,H/2-10);
-      ctx.font='14px Nunito';
-      ctx.fillText(`Du brugte ${lives} liv`,W/2,H/2+30);
+      ctx.fillText(`🚀 ${crystals} krystaller!`,W/2,H/2-18);
+      ctx.fillStyle='#fff'; ctx.font='14px Nunito';
+      ctx.fillText(`Du brugte ${lives} liv`,W/2,H/2+6);
+      if(isNewRecord) {
+        ctx.fillStyle='#00ff88'; ctx.font='bold 18px Nunito';
+        ctx.fillText(`🏆 NY REKORD!`,W/2,H/2+34);
+      } else if(rec) {
+        ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='14px Nunito';
+        ctx.fillText(`Din rekord: ${rec.score} krystaller (${formatDate(rec.date)})`,W/2,H/2+32);
+      }
     }
     gameLoop=requestAnimationFrame(draw);
   }
@@ -1444,6 +1605,7 @@ function runSuperhero(canvas, ctx, power) {
   const W=canvas.width, H=canvas.height;
   const shots=Math.max(1, power); // antal stjerner = antal skud
   let shotsLeft=shots, zapped=0, frame=0;
+  let recorded=false; // sørger for at resultatet kun gemmes én gang
   let hero={x:W/2,y:H-60};
   const villains=[], lasers=[];
   for(let i=0;i<4;i++) villains.push({x:60+i*(W-80)/3,y:80+Math.random()*100,alive:true,dx:(Math.random()-0.5)*2.5,emoji:['👿','🤖','👾','🦹'][i]});
@@ -1492,9 +1654,24 @@ function runSuperhero(canvas, ctx, power) {
     ctx.fillText(`⚡ ${zapped} skurke · 💥 ${shotsLeft} skud`,W/2,23);
 
     if(shotsLeft<=0&&lasers.length===0) {
-      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100);
+      let isNewRecord = false;
+      if(!recorded) {
+        recorded = true;
+        isNewRecord = recordGameResult(zapped);
+        currentChild.usedGames[activeGameKey] = true;
+        save();
+      }
+      const rec = currentChild.scores[activeGameKey];
+      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-60,W,130);
       ctx.fillStyle='#ff2060'; ctx.font='bold 22px Fredoka One'; ctx.textAlign='center';
-      ctx.fillText(`🦸 ${zapped} skurke!`,W/2,H/2-10);
+      ctx.fillText(`🦸 ${zapped} skurke!`,W/2,H/2-18);
+      if(isNewRecord) {
+        ctx.fillStyle='#00ff88'; ctx.font='bold 18px Nunito';
+        ctx.fillText(`🏆 NY REKORD!`,W/2,H/2+16);
+      } else if(rec) {
+        ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='14px Nunito';
+        ctx.fillText(`Din rekord: ${rec.score} skurke (${formatDate(rec.date)})`,W/2,H/2+14);
+      }
     }
     gameLoop=requestAnimationFrame(draw);
   }
@@ -1503,9 +1680,50 @@ function runSuperhero(canvas, ctx, power) {
 
 function endGame() {
   if(gameLoop) { cancelAnimationFrame(gameLoop); gameLoop = null; }
-  // Behold alt: stjerner og opgaver røres ikke. Gå tilbage til barnets dashboard.
+  // Behold alt: stjerner og opgaver røres ikke.
+  // Vis historik for det netop spillede spil.
+  if(activeGameKey) {
+    renderHistory(activeGameKey);
+    showScreen('history');
+  } else {
+    goToDashboard();
+  }
+}
+
+function goToDashboard() {
   showScreen('dashboard');
   renderDashboard();
+}
+
+function renderHistory(gameKey) {
+  const label = SCORE_LABELS[gameKey] || 'point';
+  document.getElementById('history-title').textContent = `${GAME_NAMES[gameKey]} – dine spil`;
+  
+  const rec = currentChild.scores[gameKey];
+  const recordEl = document.getElementById('history-record');
+  if(rec) {
+    recordEl.textContent = `🏆 Rekord: ${rec.score} ${label} (${formatDate(rec.date)})`;
+  } else {
+    recordEl.textContent = '';
+  }
+  
+  const list = document.getElementById('history-list');
+  list.innerHTML = '';
+  const runs = currentChild.history[gameKey] || [];
+  if(runs.length === 0) {
+    list.innerHTML = '<div style="text-align:center; opacity:0.6;">Ingen spil endnu</div>';
+    return;
+  }
+  const best = rec ? rec.score : -1;
+  let bestMarked = false;
+  runs.forEach(run => {
+    const isBest = !bestMarked && run.score === best;
+    if(isBest) bestMarked = true; // marker kun den første (nyeste) rekord-runde
+    const row = document.createElement('div');
+    row.style.cssText = `display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-radius:12px; background:${isBest ? 'rgba(255,184,0,0.18)' : 'rgba(255,255,255,0.06)'}; ${isBest ? 'border:1px solid rgba(255,184,0,0.5);' : ''}`;
+    row.innerHTML = `<span style="font-weight:800; font-size:18px;">${isBest ? '🏆 ' : ''}${run.score} ${label}</span><span style="opacity:0.65; font-size:14px;">${formatDate(run.date)}</span>`;
+    list.appendChild(row);
+  });
 }
 
 // ═══════════════════════════════════════
