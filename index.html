@@ -992,7 +992,15 @@ function startGame() {
   
   showScreen('game');
   
-  const canvas = document.getElementById('game-canvas');
+  // Stop enhver kørende spil-løkke fra et tidligere spil
+  if(gameLoop) { cancelAnimationFrame(gameLoop); gameLoop = null; }
+  
+  // Erstat canvas med en frisk klon. Det fjerner ALLE gamle event listeners
+  // (mousemove/touchmove/touchstart) som ellers ville hobe sig op mellem spil
+  // og kunne give sort skærm eller dobbelt-input.
+  const oldCanvas = document.getElementById('game-canvas');
+  const canvas = oldCanvas.cloneNode(false);
+  oldCanvas.parentNode.replaceChild(canvas, oldCanvas);
   const ctx = canvas.getContext('2d');
   const power = currentChild.currency;
   
@@ -1016,7 +1024,7 @@ function runFootball(canvas, ctx, power) {
     phase='aim'; angle=0; ballX=W/2; ballY=H-80; ballVX=0; ballVY=0; frame=0; lastResult='';
   }
 
-  canvas.onclick = () => {
+  const handleTap = () => {
     if(phase==='aim') { 
       phase='shoot'; 
       const shootAngle = angle - Math.PI/2;
@@ -1027,6 +1035,8 @@ function runFootball(canvas, ctx, power) {
       reset();
     }
   }
+  canvas.onclick = handleTap;
+  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); handleTap(); }, {passive:false});
 
   function draw() {
     ctx.fillStyle='#1d7a1d'; ctx.fillRect(0,0,W,H);
@@ -1142,8 +1152,20 @@ function runUnicorn(canvas, ctx, power) {
 
   for(let i=0;i<4;i++) rings.push({ x:W+i*180, y:50+Math.random()*(H-100), r:35, open:true });
 
-  canvas.onclick = () => { if(alive) vy=-7; }
-  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); if(alive) vy=-7; }, {passive:false});
+  // Ét fælles input-håndtag for både mus og touch.
+  // Virker både til at flappe (når i live) og til at fortsætte efter mistet liv (på pause).
+  const handleInput = () => {
+    if(alive) {
+      vy = -7; // flap
+    } else if(livesLeft > 0) {
+      // Fortsæt med næste liv
+      unicorn.y = H/2;
+      vy = 0;
+      alive = true;
+    }
+  };
+  canvas.onclick = handleInput;
+  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); handleInput(); }, {passive:false});
 
   function draw() {
     frame++;
@@ -1203,14 +1225,6 @@ function runUnicorn(canvas, ctx, power) {
       ctx.fillText(`💔 ${livesLeft} liv tilbage`, W/2, H/2-10);
       ctx.font='14px Nunito';
       ctx.fillText(`Tryk for at fortsætte`, W/2, H/2+30);
-      
-      canvas.onclick = () => {
-        // Restart med næste liv
-        unicorn.y = H/2;
-        vy = 0;
-        alive = true;
-        canvas.onclick = () => { if(alive) vy=-7; };
-      };
     } else if(!alive) {
       // Game over
       ctx.fillStyle='rgba(0,0,0,0.6)'; ctx.fillRect(0,H/2-50,W,110);
@@ -1234,14 +1248,16 @@ function runPirate(canvas, ctx, power) {
   const spawnShip=()=> ships.push({x:30+Math.random()*(W-60),y:60+Math.random()*80,alive:true,dx:(Math.random()-0.5)*5});
   for(let i=0;i<3;i++) spawnShip();
 
-  canvas.onclick=(e)=>{
+  const fireAt = (clientX, clientY) => {
     if(shotsLeft<=0) return;
     const rect=canvas.getBoundingClientRect();
-    const cx=(e.clientX-rect.left)*(W/rect.width);
-    const cy=(e.clientY-rect.top)*(H/rect.height);
+    const cx=(clientX-rect.left)*(W/rect.width);
+    const cy=(clientY-rect.top)*(H/rect.height);
     projectiles.push({x:W/2,y:H-60,tx:cx,ty:cy,t:0});
     shotsLeft--;
   }
+  canvas.onclick=(e)=>fireAt(e.clientX, e.clientY);
+  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); const t=e.touches[0]||e.changedTouches[0]; if(t) fireAt(t.clientX, t.clientY); }, {passive:false});
 
   function draw() {
     const sky=ctx.createLinearGradient(0,0,0,H*0.55);
@@ -1265,15 +1281,17 @@ function runPirate(canvas, ctx, power) {
       ctx.font='20px serif'; ctx.fillText('💣',px,py);
       if(p.t>=1) {
         projectiles.splice(i,1);
-        // Check collision med skibe
-        for(let j=ships.length-1; j>=0; j--) {
-          const s = ships[j];
-          if(Math.hypot(s.x-p.tx,s.y-p.ty)<40) { 
-            ships.splice(j, 1); // Fjern skibet MED DET SAMME
-            hits++; 
-            spawnShip(); // Spawn nyt skib
-            break; // Kun ét skib per skud
-          }
+        // Check collision mod skibenes AKTUELLE position der hvor bomben landede (p.tx/p.ty),
+        // ikke hvor de var da barnet klikkede. Find nærmeste skib indenfor radius.
+        let bestIdx = -1, bestDist = 50; // generøs radius så det er børnevenligt
+        for(let j=0; j<ships.length; j++) {
+          const d = Math.hypot(ships[j].x - p.tx, ships[j].y - p.ty);
+          if(d < bestDist) { bestDist = d; bestIdx = j; }
+        }
+        if(bestIdx > -1) {
+          ships.splice(bestIdx, 1); // Fjern skibet MED DET SAMME
+          hits++;
+          spawnShip(); // Spawn nyt skib
         }
       }
     }
@@ -1308,6 +1326,24 @@ function runRocket(canvas, ctx, power) {
 
   canvas.addEventListener('mousemove',e=>{ const r=canvas.getBoundingClientRect(); rocket.x=(e.clientX-r.left)*(W/r.width); },{passive:true});
   canvas.addEventListener('touchmove',e=>{ e.preventDefault(); const r=canvas.getBoundingClientRect(); rocket.x=(e.touches[0].clientX-r.left)*(W/r.width); },{passive:false});
+
+  // Fortsæt efter mistet liv - virker på både mus (tap) og touch (iPad/iPhone).
+  const continueAfterDeath = () => {
+    if(!alive && livesLeft > 0) {
+      alive = true;
+      rocket.x = W/2;
+      rocket.y = H-60;
+      // Skub asteroider væk fra raketten så man ikke dør igen med det samme
+      asteroids.forEach(a=>{
+        if(Math.hypot(rocket.x-a.x, rocket.y-a.y) < 120) {
+          a.y = -60 - Math.random()*100;
+          a.x = Math.random()*W;
+        }
+      });
+    }
+  };
+  canvas.onclick = continueAfterDeath;
+  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); continueAfterDeath(); }, {passive:false});
 
   function draw() {
     frame++;
@@ -1349,16 +1385,11 @@ function runRocket(canvas, ctx, power) {
         ctx.lineWidth=3;
         ctx.stroke();
         
-        // Collision check
+        // Collision check - kun hvis stadig i live (undgå at miste flere liv på én gang)
         const distance = Math.hypot(rocket.x-a.x, rocket.y-a.y);
-        if(distance < a.r+30) {
+        if(alive && distance < a.r+30) {
           livesLeft--;
-          if(livesLeft > 0) {
-            // Pause spillet - vis "tryk for næste liv"
-            alive = false;
-          } else {
-            alive = false;
-          }
+          alive = false; // Pause ELLER game over - håndteres nedenfor
         }
       });
     } else {
@@ -1395,12 +1426,6 @@ function runRocket(canvas, ctx, power) {
       ctx.fillText(`💔 ${livesLeft} liv tilbage`,W/2,H/2-10);
       ctx.font='14px Nunito';
       ctx.fillText(`Tryk for at fortsætte`,W/2,H/2+30);
-      
-      canvas.onclick = () => {
-        alive = true;
-        rocket.y = H-60;
-        canvas.onclick = null;
-      };
     } else if(!alive) {
       // Game over
       ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(0,H/2-50,W,100);
@@ -1423,13 +1448,15 @@ function runSuperhero(canvas, ctx, power) {
   const villains=[], lasers=[];
   for(let i=0;i<4;i++) villains.push({x:60+i*(W-80)/3,y:80+Math.random()*100,alive:true,dx:(Math.random()-0.5)*2.5,emoji:['👿','🤖','👾','🦹'][i]});
 
-  canvas.onclick=(e)=>{
+  const fireAt = (clientX, clientY) => {
     if(shotsLeft<=0) return;
     const r=canvas.getBoundingClientRect();
-    const tx=(e.clientX-r.left)*(W/r.width), ty=(e.clientY-r.top)*(H/r.height);
+    const tx=(clientX-r.left)*(W/r.width), ty=(clientY-r.top)*(H/r.height);
     lasers.push({x:hero.x,y:hero.y-20,tx,ty,t:0});
     shotsLeft--;
   }
+  canvas.onclick=(e)=>fireAt(e.clientX, e.clientY);
+  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); const t=e.touches[0]||e.changedTouches[0]; if(t) fireAt(t.clientX, t.clientY); }, {passive:false});
 
   function draw() {
     frame++;
@@ -1475,12 +1502,10 @@ function runSuperhero(canvas, ctx, power) {
 }
 
 function endGame() {
-  if(gameLoop) cancelAnimationFrame(gameLoop);
-  currentChild.currency = 0;
-  currentChild.tasks = [];
-  save();
-  showScreen('login');
-  renderChildren();
+  if(gameLoop) { cancelAnimationFrame(gameLoop); gameLoop = null; }
+  // Behold alt: stjerner og opgaver røres ikke. Gå tilbage til barnets dashboard.
+  showScreen('dashboard');
+  renderDashboard();
 }
 
 // ═══════════════════════════════════════
